@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IceCast â€” Weddell Sea Ice Prediction Dashboard</title>
+    <meta name="description" content="AI-powered sea ice concentration prediction dashboard for the Weddell Sea, Antarctica. Real-time monitoring, forecasting, and maritime safety alerts.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Ambient background glow -->
+    <div class="ambient-glow ambient-glow--1"></div>
+    <div class="ambient-glow ambient-glow--2"></div>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar__brand">
+            <div class="sidebar__logo">
+                <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="20" cy="20" r="18" stroke="url(#logoGrad)" stroke-width="2.5" fill="none"/>
+                    <path d="M20 6C20 6 12 14 12 22C12 26.4 15.6 30 20 30C24.4 30 28 26.4 28 22C28 14 20 6 20 6Z" fill="url(#logoGrad)" opacity="0.3"/>
+                    <path d="M20 10L22 18H26L23 22L24 28L20 25L16 28L17 22L14 18H18L20 10Z" fill="url(#logoGrad)"/>
+                    <defs>
+                        <linearGradient id="logoGrad" x1="0" y1="0" x2="40" y2="40">
+                            <stop offset="0%" stop-color="#60A5FA"/>
+                            <stop offset="100%" stop-color="#A78BFA"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+            <div class="sidebar__brand-text">
+                <span class="sidebar__name">IceCast</span>
+                <span class="sidebar__tagline">Weddell Sea Monitor</span>
+            </div>
+        </div>
+
+        <nav class="sidebar__nav">
+            <a href="#" class="nav-item nav-item--active" data-section="dashboard" id="nav-dashboard">
+                <svg class="nav-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+                    <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+                    <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+                    <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+                </svg>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="nav-item" data-section="map" id="nav-map">
+                <svg class="nav-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z"/>
+                    <path d="M8 2v16"/>
+                    <path d="M16 6v16"/>
+                </svg>
+                <span>Ice Map</span>
+            </a>
+            <a href="#" class="nav-item" data-section="predictions" id="nav-predictions">
+                <svg class="nav-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                </svg>
+                <span>Predictions</span>
+            </a>
+            <a href="#" class="nav-item" data-section="analytics" id="nav-analytics">
+                <svg class="nav-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M18 20V10"/>
+                    <path d="M12 20V4"/>
+                    <path d="M6 20v-6"/>
+                </svg>
+                <span>Analytics</span>
+            </a>
+            <a href="#" class="nav-item" data-section="alerts" id="nav-alerts">
+                <svg class="nav-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+                <span>Alerts</span>
+                <span class="nav-item__badge" id="alert-badge">3</span>
+            </a>
+            <a href="#" class="nav-item" data-section="navigation" id="nav-navigation">
+                <svg class="nav-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <polygon points="3 11 22 2 13 21 11 13 3 11"/>
+                </svg>
+                <span>Navigation</span>
+                <span class="nav-item__badge nav-item__badge--live" id="nav-live-badge">LIVE</span>
+            </a>
+        </nav>
+
+        <div class="sidebar__footer">
+            <div class="sidebar__status">
+                <div class="status-dot status-dot--live"></div>
+                <span>Model Online</span>
+            </div>
+            <div class="sidebar__version">v0.1.0 MVP</div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main" id="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header__left">
+                <button class="header__menu-btn" id="menu-toggle" aria-label="Toggle menu">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 12h18M3 6h18M3 18h18"/>
+                    </svg>
+                </button>
+                <div class="header__title-group">
+                    <h1 class="header__title">Dashboard</h1>
+                    <span class="header__subtitle">Weddell Sea, Antarctica Â· Oct 2023 â€“ Feb 2024</span>
+                </div>
+            </div>
+            <div class="header__right">
+                <div class="header__search">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <circle cx="11" cy="11" r="8"/>
+                        <path d="M21 21l-4.35-4.35"/>
+                    </svg>
+                    <input type="text" placeholder="Search regions, dates..." id="search-input">
+                </div>
+                <div class="header__date" id="current-date"></div>
+                <div class="header__avatar" id="user-avatar">
+                    <span>HC</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Section -->
+        <section class="section section--active" id="section-dashboard">
+            <!-- Metric Cards -->
+            <div class="metrics-grid">
+                <div class="metric-card" id="card-ice-extent">
+                    <div class="metric-card__icon metric-card__icon--ice">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M12 2L15 8L22 9L17 14L18 21L12 18L6 21L7 14L2 9L9 8L12 2Z"/>
+                        </svg>
+                    </div>
+                    <div class="metric-card__content">
+                        <span class="metric-card__label">Ice Extent</span>
+                        <span class="metric-card__value" id="metric-ice-extent">â€”</span>
+                        <span class="metric-card__unit">million kmÂ²</span>
+                    </div>
+                    <div class="metric-card__trend metric-card__trend--down" id="trend-ice-extent">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M7 7l10 10M17 7v10H7"/>
+                        </svg>
+                        <span>-12.3%</span>
+                    </div>
+                </div>
+
+                <div class="metric-card" id="card-avg-concentration">
+                    <div class="metric-card__icon metric-card__icon--concentration">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M12 6v6l4 2"/>
+                        </svg>
+                    </div>
+                    <div class="metric-card__content">
+                        <span class="metric-card__label">Avg Concentration</span>
+                        <span class="metric-card__value" id="metric-avg-conc">â€”</span>
+                        <span class="metric-card__unit">%</span>
+                    </div>
+                    <div class="metric-card__trend metric-card__trend--down" id="trend-avg-conc">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M7 7l10 10M17 7v10H7"/>
+                        </svg>
+                        <span>-8.1%</span>
+                    </div>
+                </div>
+
+                <div class="metric-card" id="card-wind-speed">
+                    <div class="metric-card__icon metric-card__icon--wind">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/>
+                        </svg>
+                    </div>
+                    <div class="metric-card__content">
+                        <span class="metric-card__label">Wind Speed</span>
+                        <span class="metric-card__value" id="metric-wind">â€”</span>
+                        <span class="metric-card__unit">m/s</span>
+                    </div>
+                    <div class="metric-card__trend metric-card__trend--up" id="trend-wind">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 17L7 7M7 17V7h10"/>
+                        </svg>
+                        <span>+5.4%</span>
+                    </div>
+                </div>
+
+                <div class="metric-card" id="card-active-alerts">
+                    <div class="metric-card__icon metric-card__icon--alerts">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                            <line x1="12" y1="9" x2="12" y2="13"/>
+                            <line x1="12" y1="17" x2="12.01" y2="17"/>
+                        </svg>
+                    </div>
+                    <div class="metric-card__content">
+                        <span class="metric-card__label">Active Alerts</span>
+                        <span class="metric-card__value" id="metric-alerts">â€”</span>
+                        <span class="metric-card__unit">warnings</span>
+                    </div>
+                    <div class="metric-card__trend metric-card__trend--neutral" id="trend-alerts">
+                        <span>Last 24h</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Panel: Map + Sidebar -->
+            <div class="dashboard-grid">
+                <!-- Map Visualization -->
+                <div class="panel panel--map" id="panel-map">
+                    <div class="panel__header">
+                        <h2 class="panel__title">Sea Ice Concentration â€” Weddell Sea</h2>
+                        <div class="panel__controls">
+                            <button class="btn btn--ghost btn--sm" id="btn-layer-toggle">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16">
+                                    <polygon points="12 2 22 8.5 12 15 2 8.5"/>
+                                    <polyline points="2 15.5 12 22 22 15.5"/>
+                                </svg>
+                                Layers
+                            </button>
+                            <button class="btn btn--ghost btn--sm" id="btn-fullscreen">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16">
+                                    <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="map-container" id="map-container">
+                        <canvas id="ice-map-canvas"></canvas>
+                        <div class="map-overlay map-overlay--coords" id="map-coords">
+                            <span>Lat: â€”</span>
+                            <span>Lon: â€”</span>
+                        </div>
+                        <div class="map-overlay map-overlay--legend" id="map-legend">
+                            <span class="legend-title">SIC (%)</span>
+                            <div class="legend-bar"></div>
+                            <div class="legend-labels">
+                                <span>0</span>
+                                <span>25</span>
+                                <span>50</span>
+                                <span>75</span>
+                                <span>100</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Time Slider -->
+                    <div class="time-slider" id="time-slider">
+                        <button class="btn btn--icon" id="btn-play-pause" aria-label="Play/Pause">
+                            <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" id="icon-play">
+                                <polygon points="5 3 19 12 5 21 5 3"/>
+                            </svg>
+                            <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" id="icon-pause" style="display:none;">
+                                <rect x="6" y="4" width="4" height="16"/>
+                                <rect x="14" y="4" width="4" height="16"/>
+                            </svg>
+                        </button>
+                        <div class="time-slider__track-wrap">
+                            <input type="range" min="0" max="120" value="0" class="time-slider__input" id="time-range">
+                            <div class="time-slider__progress" id="time-progress"></div>
+                        </div>
+                        <div class="time-slider__label" id="time-label">Oct 1, 2023</div>
+                    </div>
+                </div>
+
+                <!-- Right Sidebar Panels -->
+                <div class="side-panels">
+                    <!-- Prediction Panel -->
+                    <div class="panel panel--prediction" id="panel-prediction">
+                        <div class="panel__header">
+                            <h2 class="panel__title">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="18" height="18">
+                                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                                </svg>
+                                Forecast
+                            </h2>
+                            <span class="panel__badge panel__badge--ai">AI Powered</span>
+                        </div>
+                        <div class="prediction-content">
+                            <div class="prediction-horizon">
+                                <button class="horizon-btn horizon-btn--active" data-days="1" id="horizon-1d">1 Day</button>
+                                <button class="horizon-btn" data-days="3" id="horizon-3d">3 Days</button>
+                                <button class="horizon-btn" data-days="7" id="horizon-7d">7 Days</button>
+                            </div>
+                            <div class="prediction-result" id="prediction-result">
+                                <div class="prediction-result__header">
+                                    <span class="prediction-result__title">Predicted Ice Extent</span>
+                                    <span class="prediction-result__confidence">Confidence: <strong>87%</strong></span>
+                                </div>
+                                <div class="prediction-result__value">
+                                    <span class="prediction-result__number" id="pred-value">4.21</span>
+                                    <span class="prediction-result__unit">M kmÂ²</span>
+                                </div>
+                                <div class="prediction-result__change prediction-result__change--decrease">
+                                    <span>â–¼ 0.15 M kmÂ² from today</span>
+                                </div>
+                                <div class="prediction-sparkline" id="prediction-sparkline">
+                                    <canvas id="sparkline-canvas" height="60"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Alert Feed -->
+                    <div class="panel panel--alerts" id="panel-alerts">
+                        <div class="panel__header">
+                            <h2 class="panel__title">Recent Alerts</h2>
+                            <button class="btn btn--ghost btn--sm" id="btn-view-all-alerts">View All</button>
+                        </div>
+                        <div class="alert-feed" id="alert-feed">
+                            <div class="alert-item alert-item--critical">
+                                <div class="alert-item__indicator"></div>
+                                <div class="alert-item__content">
+                                    <span class="alert-item__title">Rapid Ice Loss Detected</span>
+                                    <span class="alert-item__desc">Sector NW-3: 18% decrease in 48h</span>
+                                    <span class="alert-item__time">2 hours ago</span>
+                                </div>
+                            </div>
+                            <div class="alert-item alert-item--warning">
+                                <div class="alert-item__indicator"></div>
+                                <div class="alert-item__content">
+                                    <span class="alert-item__title">High Wind Warning</span>
+                                    <span class="alert-item__desc">Wind speeds exceeding 15 m/s in sector SE-1</span>
+                                    <span class="alert-item__time">5 hours ago</span>
+                                </div>
+                            </div>
+                            <div class="alert-item alert-item--info">
+                                <div class="alert-item__indicator"></div>
+                                <div class="alert-item__content">
+                                    <span class="alert-item__title">Model Retrained</span>
+                                    <span class="alert-item__desc">Updated with latest 7-day window. RMSE: 0.042</span>
+                                    <span class="alert-item__time">12 hours ago</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Panel: Trend Chart -->
+            <div class="panel panel--chart" id="panel-trend">
+                <div class="panel__header">
+                    <h2 class="panel__title">Ice Concentration Trend</h2>
+                    <div class="panel__controls">
+                        <button class="btn btn--ghost btn--sm tab-btn tab-btn--active" data-range="30" id="range-30d">30 Days</button>
+                        <button class="btn btn--ghost btn--sm tab-btn" data-range="90" id="range-90d">90 Days</button>
+                        <button class="btn btn--ghost btn--sm tab-btn" data-range="all" id="range-all">All</button>
+                    </div>
+                </div>
+                <div class="chart-container" id="trend-chart-container">
+                    <canvas id="trend-chart-canvas"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Map Section (full-screen map view) -->
+        <section class="section" id="section-map">
+            <div class="panel panel--fullmap">
+                <div class="panel__header">
+                    <h2 class="panel__title">Interactive Ice Map</h2>
+                    <div class="panel__controls">
+                        <select class="select" id="map-variable-select">
+                            <option value="siconc">Sea Ice Concentration</option>
+                            <option value="wind">Wind Speed</option>
+                            <option value="current">Current Speed</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="fullmap-container" id="fullmap-container">
+                    <canvas id="fullmap-canvas"></canvas>
+                    <div class="map-overlay map-overlay--legend" id="fullmap-legend">
+                        <span class="legend-title">SIC (%)</span>
+                        <div class="legend-bar"></div>
+                        <div class="legend-labels">
+                            <span>0</span>
+                            <span>50</span>
+                            <span>100</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Predictions Section -->
+        <section class="section" id="section-predictions">
+            <div class="predictions-layout">
+                <div class="panel">
+                    <div class="panel__header">
+                        <h2 class="panel__title">Model Architecture & Trained Metrics</h2>
+                    </div>
+                    <div class="model-info">
+                        <div class="model-info__grid">
+                            <div class="model-stat">
+                                <span class="model-stat__label">Model Type</span>
+                                <span class="model-stat__value" id="stat-model-type">ConvLSTM</span>
+                            </div>
+                            <div class="model-stat">
+                                <span class="model-stat__label">Training Sequences</span>
+                                <span class="model-stat__value" id="stat-train-samples">841</span>
+                            </div>
+                            <div class="model-stat">
+                                <span class="model-stat__label">Test RMSE</span>
+                                <span class="model-stat__value" id="stat-test-rmse" style="color: #34D399;">0.0060 (0.6%)</span>
+                            </div>
+                            <div class="model-stat">
+                                <span class="model-stat__label">Test MAE</span>
+                                <span class="model-stat__value" id="stat-test-mae" style="color: #34D399;">0.0035 (0.35%)</span>
+                            </div>
+                            <div class="model-stat">
+                                <span class="model-stat__label">Model Parameters</span>
+                                <span class="model-stat__value" id="stat-params">76,833</span>
+                            </div>
+                            <div class="model-stat">
+                                <span class="model-stat__label">Grid & Features</span>
+                                <span class="model-stat__value" id="stat-grid">37Ã—81 (11 ch)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="panel__header" style="flex-wrap: wrap; gap: 12px;">
+                        <div>
+                            <h2 class="panel__title">Live Model Prediction vs. Ground Truth</h2>
+                            <div style="font-size: 0.8rem; color: #94A3B8; margin-top: 4px;">
+                                Target Date: <strong id="infer-target-date" style="color: #38BDF8; font-size: 0.9rem;">Nov 16, 2023</strong> Â· 7-Day Lookback Forecast
+                            </div>
+                        </div>
+                        <div class="panel__controls" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                            <label for="infer-step-select" style="font-size: 0.8rem; color: #94A3B8;">Observation Period:</label>
+                            <select id="infer-step-select" class="form-select" style="background: #1E293B; color: #F1F5F9; border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; padding: 6px 12px; font-size: 0.82rem; cursor: pointer;">
+                                <option value="180" selected>Nov 16, 2023 â€” Dense Sea Ice Pack (Spring)</option>
+                                <option value="56">Oct 15, 2023 â€” Peak Winter Extent</option>
+                                <option value="256">Dec 05, 2023 â€” Active Marginal Melt</option>
+                                <option value="400">Jan 10, 2024 â€” Mid-Summer Holdout</option>
+                                <option value="520">Feb 08, 2024 â€” Summer Minimum Retreat</option>
+                            </select>
+                            <button class="btn btn--ghost btn--sm" id="btn-prev-sample" title="Previous Time Step">
+                                â—€ Prev
+                            </button>
+                            <button class="btn btn--ghost btn--sm" id="btn-next-sample" title="Next Time Step">
+                                Next â–¶
+                            </button>
+                            <button class="btn btn--primary btn--sm" id="btn-run-inference">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16">
+                                    <polygon points="5 3 19 12 5 21 5 3"/>
+                                </svg>
+                                Run Live Inference
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Sea Ice Legend Bar -->
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; margin: 12px 0 6px 0; font-size: 0.78rem; color: #94A3B8;">
+                        <span style="font-weight: 600; color: #CBD5E1;">Sea Ice Concentration:</span>
+                        <div style="display: inline-flex; align-items: center; gap: 6px;">
+                            <span style="width: 14px; height: 14px; border-radius: 3px; background: rgb(10, 14, 30); border: 1px solid rgba(255,255,255,0.2);"></span>
+                            <span>Open Ocean (&lt;15%)</span>
+                        </div>
+                        <div style="display: inline-flex; align-items: center; gap: 6px;">
+                            <span style="width: 14px; height: 14px; border-radius: 3px; background: rgb(37, 99, 235);"></span>
+                            <span>Marginal (15â€“50%)</span>
+                        </div>
+                        <div style="display: inline-flex; align-items: center; gap: 6px;">
+                            <span style="width: 14px; height: 14px; border-radius: 3px; background: rgb(96, 165, 250);"></span>
+                            <span>Pack Ice (50â€“85%)</span>
+                        </div>
+                        <div style="display: inline-flex; align-items: center; gap: 6px;">
+                            <span style="width: 14px; height: 14px; border-radius: 3px; background: rgb(224, 242, 254);"></span>
+                            <span>Dense Pack (&gt;85%)</span>
+                        </div>
+                    </div>
+
+                    <div class="comparison-container">
+                        <div class="comparison-panel">
+                            <h3 class="comparison-panel__title">Actual Observation (Copernicus Satellite)</h3>
+                            <canvas id="actual-canvas" class="comparison-canvas"></canvas>
+                        </div>
+                        <div class="comparison-divider">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </div>
+                        <div class="comparison-panel">
+                            <h3 class="comparison-panel__title">ConvLSTM Prediction (AI Forecast)</h3>
+                            <canvas id="predicted-canvas" class="comparison-canvas"></canvas>
+                        </div>
+                    </div>
+                    <div class="prediction-metrics-bar" id="prediction-metrics-bar" style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 20px; font-size: 0.85rem; color: #94A3B8; background: rgba(15, 23, 42, 0.6); padding: 10px 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06);">
+                        <span>Status: <strong id="infer-status" style="color: #60A5FA;">PyTorch ConvLSTM Active</strong></span>
+                        <span>Actual Ice: <strong id="infer-actual-sic" style="color: #38BDF8;">62.5%</strong></span>
+                        <span>Predicted Ice: <strong id="infer-pred-sic" style="color: #818CF8;">62.0%</strong></span>
+                        <span>Spatial MAE: <strong id="infer-mae" style="color: #34D399;">0.0217 (2.1%)</strong></span>
+                        <span>Spatial RMSE: <strong id="infer-rmse" style="color: #34D399;">0.0384</strong></span>
+                        <span>Grid: <strong>37 Ã— 81</strong></span>
+                    </div>
+                    <div style="margin-top: 16px; text-align: right;">
+                        <a href="/prediction_comparison.png" target="_blank" class="btn btn--ghost btn--sm" style="display: inline-flex; align-items: center; gap: 6px;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16">
+                                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                                <circle cx="8.5" cy="8.5" r="1.5"/>
+                                <polyline points="21 15 16 10 5 21"/>
+                            </svg>
+                            Open Full-Res Multi-Panel Comparison (PNG)
+                        </a>
+                    </div>
+                </div>
+
+                <!-- ===== Custom Scenario Tester ===== -->
+                <div class="panel" id="panel-custom-tester" style="margin-top: 0;">
+                    <div class="panel__header">
+                        <div>
+                            <h2 class="panel__title">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="18" height="18" style="display:inline;vertical-align:middle;margin-right:6px;">
+                                    <path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/>
+                                </svg>
+                                Custom Scenario Tester
+                            </h2>
+                            <div style="font-size:0.78rem;color:#64748B;margin-top:3px;">Set custom environmental conditions &amp; run live ConvLSTM inference to see the predicted sea ice map</div>
+                        </div>
+                        <span class="panel__badge panel__badge--ai">Live Model</span>
+                    </div>
+
+                    <!-- Preset buttons -->
+                    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;">
+                        <span style="font-size:0.78rem;color:#64748B;align-self:center;margin-right:4px;">Quick Presets:</span>
+                        <button class="btn btn--ghost btn--sm preset-btn" id="preset-open-ocean" data-preset="open_ocean">🌊 Open Ocean</button>
+                        <button class="btn btn--ghost btn--sm preset-btn" id="preset-dense-pack" data-preset="dense_pack">🧊 Dense Pack Ice</button>
+                        <button class="btn btn--ghost btn--sm preset-btn" id="preset-storm" data-preset="storm">💨 Storm Conditions</button>
+                        <button class="btn btn--ghost btn--sm preset-btn" id="preset-marginal" data-preset="marginal">🌡️ Marginal Ice Zone</button>
+                    </div>
+
+                    <div class="custom-tester-grid">
+                        <!-- Left: Feature Inputs -->
+                        <div class="custom-tester-inputs">
+
+                            <!-- Sea Ice State -->
+                            <div class="feature-group">
+                                <div class="feature-group__title">🧊 Sea Ice State</div>
+                                <div class="feature-row">
+                                    <label class="feature-label" for="fi-siconc">
+                                        <span>siconc</span>
+                                        <span class="feature-desc">Sea Ice Concentration (0–1)</span>
+                                    </label>
+                                    <div class="feature-control">
+                                        <input type="range" id="fi-siconc-range" min="0" max="1" step="0.01" value="0.5" class="feature-slider">
+                                        <input type="number" id="fi-siconc" min="0" max="1" step="0.01" value="0.5" class="feature-number">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Wind Features -->
+                            <div class="feature-group">
+                                <div class="feature-group__title">💨 Wind (ERA5 10m)</div>
+                                <div class="feature-row">
+                                    <label class="feature-label" for="fi-u10">
+                                        <span>u10</span>
+                                        <span class="feature-desc">Zonal wind m/s (−30 to +30)</span>
+                                    </label>
+                                    <div class="feature-control">
+                                        <input type="range" id="fi-u10-range" min="-30" max="30" step="0.5" value="0" class="feature-slider">
+                                        <input type="number" id="fi-u10" min="-30" max="30" step="0.5" value="0" class="feature-number">
+                                    </div>
+                                </div>
+                                <div class="feature-row">
+                                    <label class="feature-label" for="fi-v10">
+                                        <span>v10</span>
+                                        <span class="feature-desc">Meridional wind m/s (−30 to +30)</span>
+                                    </label>
+                                    <div class="feature-control">
+                                        <input type="range" id="fi-v10-range" min="-30" max="30" step="0.5" value="0" class="feature-slider">
+                                        <input type="number" id="fi-v10" min="-30" max="30" step="0.5" value="0" class="feature-number">
+                                    </div>
+                                </div>
+                                <div class="feature-row">
+                                    <label class="feature-label" for="fi-wind-speed">
+                                        <span>wind_speed</span>
+                                        <span class="feature-desc">Magnitude m/s (0–40)</span>
+                                    </label>
+                                    <div class="feature-control">
+                                        <input type="range" id="fi-wind-speed-range" min="0" max="40" step="0.5" value="6" class="feature-slider">
+                                        <input type="number" id="fi-wind-speed" min="0" max="40" step="0.5" value="6" class="feature-number">
+                                    </div>
+                                </div>
+                                <div class="feature-row">
+                                    <label class="feature-label" for="fi-wind-dir">
+                                        <span>wind_dir</span>
+                                        <span class="feature-desc">Direction radians (−π to π)</span>
+                                    </label>
+                                    <div class="feature-control">
+                                        <input type="range" id="fi-wind-dir-range" min="-3.14" max="3.14" step="0.05" value="0" class="feature-slider">
+                                        <input type="number" id="fi-wind-dir" min="-3.14" max="3.14" step="0.05" value="0" class="feature-number">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Ocean Currents -->
+                            <div class="feature-group">
+                                <div class="feature-group__title">🌊 Ocean Currents (Copernicus)</div>
+                                <div class="feature-row">
+                                    <label class="feature-label" for="fi-uo">
+                                        <span>uo</span>
+                                        <span class="feature-desc">Eastward current m/s (−1.5 to +1.5)</span>
+                                    </label>
+                                    <div class="feature-control">
+                                        <input type="range" id="fi-uo-range" min="-1.5" max="1.5" step="0.01" value="0" class="feature-slider">
+                                        <input type="number" id="fi-uo" min="-1.5" max="1.5" step="0.01" value="0" class="feature-number">
+                                    </div>
+                                </div>
+                                <div class="feature-row">
+                                    <label class="feature-label" for="fi-vo">
+                                        <span>vo</span>
+                                        <span class="feature-desc">Northward current m/s (−1.5 to +1.5)</span>
+                                    </label>
+                                    <div class="feature-control">
+                                        <input type="range" id="fi-vo-range" min="-1.5" max="1.5" step="0.01" value="0" class="feature-slider">
+                                        <input type="number" id="fi-vo" min="-1.5" max="1.5" step="0.01" value="0" class="feature-number">
+                                    </div>
+                                </div>
+                                <div class="feature-row">
+                                    <label class="feature-label" for="fi-current-speed">
+                                        <span>current_speed</span>
+                                        <span class="feature-desc">Magnitude m/s (0–2)</span>
+                                    </label>
+                                    <div class="feature-control">
+                                        <input type="range" id="fi-current-speed-range" min="0" max="2" step="0.01" value="0.03" class="feature-slider">
+                                        <input type="number" id="fi-current-speed" min="0" max="2" step="0.01" value="0.03" class="feature-number">
+                                    </div>
+                                </div>
+                                <div class="feature-row">
+                                    <label class="feature-label" for="fi-current-dir">
+                                        <span>current_dir</span>
+                                        <span class="feature-desc">Direction radians (−π to π)</span>
+                                    </label>
+                                    <div class="feature-control">
+                                        <input type="range" id="fi-current-dir-range" min="-3.14" max="3.14" step="0.05" value="0.1" class="feature-slider">
+                                        <input type="number" id="fi-current-dir" min="-3.14" max="3.14" step="0.05" value="0.1" class="feature-number">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Temporal -->
+                            <div class="feature-group">
+                                <div class="feature-group__title">📅 Season</div>
+                                <div class="feature-row">
+                                    <label class="feature-label" for="fi-doy">
+                                        <span>day_of_year</span>
+                                        <span class="feature-desc">1–365 (→ day_sin &amp; day_cos auto-computed)</span>
+                                    </label>
+                                    <div class="feature-control">
+                                        <input type="range" id="fi-doy-range" min="1" max="365" step="1" value="319" class="feature-slider">
+                                        <input type="number" id="fi-doy" min="1" max="365" step="1" value="319" class="feature-number">
+                                    </div>
+                                </div>
+                                <div style="font-size:0.75rem;color:#64748B;margin-top:4px;padding-left:2px;">
+                                    Season: <strong id="fi-season-label" style="color:#38BDF8;">Mid-November (Antarctic Spring)</strong>
+                                    &nbsp;·&nbsp; sin=<span id="fi-day-sin" style="color:#818CF8;">−0.19</span>
+                                    &nbsp;·&nbsp; cos=<span id="fi-day-cos" style="color:#818CF8;">+0.98</span>
+                                </div>
+                            </div>
+
+                            <!-- Run button -->
+                            <button class="btn btn--primary" id="btn-run-custom" style="width:100%;margin-top:8px;padding:12px;font-size:1rem;gap:8px;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                                Run Custom Prediction
+                            </button>
+                        </div>
+
+                        <!-- Right: Result -->
+                        <div class="custom-tester-result" id="custom-result-panel">
+                            <div style="font-size:0.82rem;color:#64748B;font-weight:600;margin-bottom:10px;letter-spacing:0.04em;text-transform:uppercase;">Prediction Output</div>
+
+                            <!-- Result SIC heatmap canvas -->
+                            <div style="position:relative;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);background:#060a12;">
+                                <canvas id="custom-pred-canvas" style="width:100%;display:block;"></canvas>
+                                <div id="custom-canvas-placeholder" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:#334155;pointer-events:none;">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" width="40" height="40" opacity="0.4"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                                    <span style="font-size:0.8rem;opacity:0.5;">Set conditions above and click Run</span>
+                                </div>
+                            </div>
+
+                            <!-- Stats grid -->
+                            <div class="custom-result-stats" id="custom-result-stats" style="opacity:0.3;pointer-events:none;">
+                                <div class="custom-stat">
+                                    <div class="custom-stat__value" id="cr-mean-sic">—</div>
+                                    <div class="custom-stat__label">Mean SIC</div>
+                                </div>
+                                <div class="custom-stat">
+                                    <div class="custom-stat__value" id="cr-extent">—</div>
+                                    <div class="custom-stat__label">Ice Extent (M km²)</div>
+                                </div>
+                                <div class="custom-stat">
+                                    <div class="custom-stat__value" id="cr-danger" style="color:#34D399;">—</div>
+                                    <div class="custom-stat__label">Nav Danger Level</div>
+                                </div>
+                            </div>
+
+                            <!-- Breakdown bars -->
+                            <div id="custom-breakdown" style="margin-top:14px;opacity:0.3;pointer-events:none;">
+                                <div style="font-size:0.75rem;color:#64748B;margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;">Ice Classification Breakdown</div>
+                                <div class="breakdown-bar-row"><span>Open Ocean</span><div class="breakdown-bar"><div class="breakdown-fill" id="br-open" style="background:#1E3A5F;width:0%"></div></div><span id="br-open-pct">0%</span></div>
+                                <div class="breakdown-bar-row"><span>Marginal</span><div class="breakdown-bar"><div class="breakdown-fill" id="br-marginal" style="background:#2563EB;width:0%"></div></div><span id="br-marginal-pct">0%</span></div>
+                                <div class="breakdown-bar-row"><span>Pack Ice</span><div class="breakdown-bar"><div class="breakdown-fill" id="br-pack" style="background:#60A5FA;width:0%"></div></div><span id="br-pack-pct">0%</span></div>
+                                <div class="breakdown-bar-row"><span>Dense Pack</span><div class="breakdown-bar"><div class="breakdown-fill" id="br-dense" style="background:#E0F2FE;width:0%"></div></div><span id="br-dense-pct">0%</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- Analytics Section -->
+        <section class="section" id="section-analytics">
+            <div class="analytics-grid">
+                <div class="panel panel--full-width">
+                    <div class="panel__header">
+                        <h2 class="panel__title">Feature Distribution</h2>
+                    </div>
+                    <div class="feature-table-wrap">
+                        <table class="feature-table" id="feature-table">
+                            <thead>
+                                <tr>
+                                    <th>Feature</th>
+                                    <th>Mean</th>
+                                    <th>Std Dev</th>
+                                    <th>Min</th>
+                                    <th>Max</th>
+                                    <th>Distribution</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="panel__header">
+                        <h2 class="panel__title">Seasonal Decomposition</h2>
+                    </div>
+                    <div class="chart-container chart-container--md">
+                        <canvas id="seasonal-chart-canvas"></canvas>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="panel__header">
+                        <h2 class="panel__title">Windâ€“Ice Correlation</h2>
+                    </div>
+                    <div class="chart-container chart-container--md">
+                        <canvas id="correlation-chart-canvas"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Alerts Section -->
+        <section class="section" id="section-alerts">
+            <div class="panel">
+                <div class="panel__header">
+                    <h2 class="panel__title">Alert History</h2>
+                    <div class="panel__controls">
+                        <select class="select" id="alert-filter">
+                            <option value="all">All Alerts</option>
+                            <option value="critical">Critical</option>
+                            <option value="warning">Warning</option>
+                            <option value="info">Info</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="alert-history" id="alert-history">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- =====================================================
+             Navigation Section: Google Maps-style Ship Nav
+             ===================================================== -->
+        <section class="section" id="section-navigation">
+            <div class="nav-section-layout">
+
+                <!-- Left: Interactive GPS Map Canvas -->
+                <div class="panel nav-map-panel" id="nav-map-panel">
+                    <div class="panel__header">
+                        <div>
+                            <h2 class="panel__title">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="18" height="18" style="display:inline;vertical-align:middle;margin-right:6px;">
+                                    <polygon points="3 11 22 2 13 21 11 13 3 11"/>
+                                </svg>
+                                Live Navigation â€” Weddell Sea
+                            </h2>
+                            <div style="font-size:0.78rem;color:#64748B;margin-top:3px;">
+                                GPS: <span style="color:#38BDF8;">78Â°Sâ€“60Â°S</span> &nbsp;Â·&nbsp; <span style="color:#38BDF8;">60Â°Wâ€“20Â°W</span>
+                                &nbsp;Â·&nbsp; <span id="nav-last-update" style="color:#94A3B8;">Loadingâ€¦</span>
+                            </div>
+                        </div>
+                        <div class="panel__controls">
+                            <button class="btn btn--ghost btn--sm" id="btn-nav-clear-path">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="13" height="13"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
+                                Clear
+                            </button>
+                            <label class="nav-toggle-label" for="nav-show-ice"><input type="checkbox" id="nav-show-ice" checked> Ice</label>
+                            <label class="nav-toggle-label" for="nav-show-grid"><input type="checkbox" id="nav-show-grid"> Grid</label>
+                        </div>
+                    </div>
+
+                    <!-- Map Canvas -->
+                    <div class="nav-map-wrap" id="nav-map-wrap">
+                        <canvas id="nav-canvas"></canvas>
+
+                        <!-- GPS Axis Labels -->
+                        <div class="nav-axis nav-axis--x" id="nav-axis-x"></div>
+                        <div class="nav-axis nav-axis--y" id="nav-axis-y"></div>
+
+                        <!-- Cursor Coords -->
+                        <div class="nav-cursor-coords" id="nav-cursor-coords" style="display:none;">
+                            <span id="nav-cursor-lat">â€”</span>, <span id="nav-cursor-lon">â€”</span>
+                        </div>
+
+                        <!-- Zoom Controls Overlay -->
+                        <div class="nav-zoom-overlay">
+                            <button class="nav-zoom-btn" id="btn-zoom-in" title="Zoom In">+</button>
+                            <span class="nav-zoom-level" id="nav-zoom-level">1.0Ã—</span>
+                            <button class="nav-zoom-btn" id="btn-zoom-out" title="Zoom Out">âˆ’</button>
+                        </div>
+
+                        <!-- Map Interaction Hint -->
+                        <div class="nav-map-hint" id="nav-map-hint">
+                            <strong>Double-click</strong> to set destination &nbsp;Â·&nbsp; <strong>Click</strong> to move ship &nbsp;Â·&nbsp; <strong>Scroll</strong> to zoom
+                        </div>
+
+                        <!-- Iceberg / Ship Tooltip -->
+                        <div class="nav-tooltip" id="nav-tooltip" style="display:none;"></div>
+                    </div>
+
+                    <!-- Route Status Bar -->
+                    <div class="nav-status-bar">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14" style="flex-shrink:0;opacity:0.7;">
+                            <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
+                        </svg>
+                        <span id="nav-route-status">ðŸ—ºï¸ Double-click on the map to place a destination pin</span>
+                    </div>
+
+                    <!-- Legend -->
+                    <div class="nav-legend">
+                        <div class="nav-legend__item"><span class="nav-legend__dot" style="background:#22D3EE;"></span> Ship</div>
+                        <div class="nav-legend__item"><span style="color:#22c55e;font-weight:700;letter-spacing:-1px;">- -</span> Planned Route</div>
+                        <div class="nav-legend__item"><span class="nav-legend__dot" style="background:#22c55e;border-radius:50%;"></span> Destination</div>
+                        <div class="nav-legend__item"><span class="nav-legend__dot nav-legend__dot--iceberg">â–²</span> Iceberg</div>
+                        <div class="nav-legend__item"><span class="nav-legend__sic" style="background:linear-gradient(to right,#0A0E1E,#1E3A8A,#60A5FA,#E0F2FE);"></span> SIC 0â†’100%</div>
+                    </div>
+                </div>
+
+                <!-- Right: Controls Sidebar -->
+                <div class="nav-sidebar">
+
+                    <!-- Ship Status -->
+                    <div class="panel nav-status-card" id="nav-ship-card">
+                        <div class="panel__header">
+                            <h2 class="panel__title" style="font-size:0.95rem;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" style="display:inline;vertical-align:middle;margin-right:5px;"><path d="M2 20h20M5 20V8l7-6 7 6v12"/><path d="M9 20v-5h6v5"/></svg>
+                                Ship Status
+                            </h2>
+                            <div class="status-dot status-dot--live" style="width:8px;height:8px;"></div>
+                        </div>
+                        <div class="nav-stat-grid">
+                            <div class="nav-stat">
+                                <span class="nav-stat__label">Latitude</span>
+                                <span class="nav-stat__value" id="ship-lat">-70.5000Â°</span>
+                            </div>
+                            <div class="nav-stat">
+                                <span class="nav-stat__label">Longitude</span>
+                                <span class="nav-stat__value" id="ship-lon">-42.0000Â°</span>
+                            </div>
+                            <div class="nav-stat">
+                                <span class="nav-stat__label">Wake Points</span>
+                                <span class="nav-stat__value" id="ship-path-count">0</span>
+                            </div>
+                            <div class="nav-stat">
+                                <span class="nav-stat__label">Dist. Sailed</span>
+                                <span class="nav-stat__value" id="ship-dist">0.0 km</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Route Planning Panel -->
+                    <div class="panel nav-route-panel">
+                        <div class="panel__header">
+                            <h2 class="panel__title" style="font-size:0.95rem;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="15" height="15" style="display:inline;vertical-align:middle;margin-right:5px;"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                                Route Planning
+                            </h2>
+                        </div>
+                        <div class="nav-route-info">
+                            <div class="nav-stat">
+                                <span class="nav-stat__label">Destination</span>
+                                <span class="nav-stat__value" id="nav-dest-display" style="font-size:0.78rem;color:#22c55e;">â€”</span>
+                            </div>
+                            <div class="nav-stat" style="margin-top:6px;">
+                                <span class="nav-stat__label">Progress / ETA</span>
+                                <span class="nav-stat__value" id="nav-eta" style="font-size:0.78rem;color:#38bdf8;">â€”</span>
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:8px;margin-top:12px;">
+                            <button class="btn btn--ghost btn--sm" id="btn-random-dest" style="flex:1;" title="Test with a random destination">
+                                ðŸŽ² Random
+                            </button>
+                            <button class="btn btn--primary btn--sm" id="btn-calc-route" style="flex:2;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14"><path d="M3 3h6l2 3-2 3H3zM15 3h6l-2 3 2 3h-6l2-3z"/><path d="M9 6h6M5 21l4-9h6l4 9"/></svg>
+                                Calculate Route
+                            </button>
+                        </div>
+                        <button class="btn btn--sm nav-navigate-btn" id="btn-start-nav" disabled style="width:100%;margin-top:8px;">
+                            â–¶ &nbsp;Auto-Navigate
+                        </button>
+                    </div>
+
+                    <!-- Hazard Alert -->
+                    <div class="panel nav-hazard-card" id="nav-hazard-card">
+                        <div class="panel__header">
+                            <h2 class="panel__title" style="font-size:0.95rem;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" style="display:inline;vertical-align:middle;margin-right:5px;"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                                Ice Hazard
+                            </h2>
+                        </div>
+                        <div class="nav-hazard-badge" id="nav-hazard-badge">CHECKINGâ€¦</div>
+                        <div class="nav-hazard-details">
+                            <div class="nav-stat">
+                                <span class="nav-stat__label">Ice Conc.</span>
+                                <span class="nav-stat__value" id="hazard-sic">â€”</span>
+                            </div>
+                            <div class="nav-stat">
+                                <span class="nav-stat__label">Message</span>
+                                <span class="nav-stat__value" id="hazard-msg" style="font-size:0.72rem;word-break:break-word;">â€”</span>
+                            </div>
+                        </div>
+                        <button class="btn btn--primary btn--sm" id="btn-check-hazard" style="width:100%;margin-top:10px;">
+                            Check Position
+                        </button>
+                    </div>
+
+                    <!-- Iceberg List -->
+                    <div class="panel nav-iceberg-panel">
+                        <div class="panel__header">
+                            <h2 class="panel__title" style="font-size:0.95rem;">
+                                â–² Icebergs
+                                <span style="font-size:0.72rem;color:#64748B;margin-left:6px;" id="iceberg-count">Loadingâ€¦</span>
+                            </h2>
+                            <button class="btn btn--ghost btn--sm" id="btn-refresh-icebergs">â†»</button>
+                        </div>
+                        <div class="iceberg-list" id="iceberg-list">
+                            <div style="color:#475569;font-size:0.82rem;padding:12px;">Loadingâ€¦</div>
+                        </div>
+                    </div>
+
+                    <!-- Settings -->
+                    <div class="panel nav-controls-panel">
+                        <div class="panel__header">
+                            <h2 class="panel__title" style="font-size:0.95rem;">âš™ï¸ Settings</h2>
+                        </div>
+                        <div style="padding:0 4px;">
+                            <label class="nav-ctrl-label" for="nav-speed">Ship Speed (knots)</label>
+                            <input type="range" id="nav-speed" min="1" max="30" value="12" class="nav-range">
+                            <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:#64748B;margin-bottom:10px;">
+                                <span>1</span><span id="nav-speed-val">12 kt</span><span>30</span>
+                            </div>
+                            <label class="nav-ctrl-label" for="nav-iceberg-interval">Iceberg Poll (sec)</label>
+                            <input type="range" id="nav-iceberg-interval" min="2" max="30" value="5" class="nav-range">
+                            <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:#64748B;">
+                                <span>2s</span><span id="nav-interval-val">5s</span><span>30s</span>
+                            </div>
+                            <button class="btn btn--ghost btn--sm" id="btn-nav-set-pos" style="width:100%;margin-top:14px;">âŠ• Set Position Manually</button>
+                            <div id="nav-manual-inputs" style="display:none;flex-direction:column;margin-top:8px;gap:6px;">
+                                <input type="number" id="manual-lat" placeholder="Latitude (e.g. -70.5)" step="0.01" class="nav-input">
+                                <input type="number" id="manual-lon" placeholder="Longitude (e.g. -42.0)" step="0.01" class="nav-input">
+                                <button class="btn btn--ghost btn--sm" id="btn-nav-go" style="width:100%;">Go</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>

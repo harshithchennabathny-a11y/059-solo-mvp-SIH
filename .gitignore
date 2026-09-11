@@ -1,0 +1,9 @@
+# Environments
+.venv/
+.env/
+
+# Data
+data/raw/
+
+# Jupyter
+.ipynb_checkpoints/
