@@ -1,5 +1,5 @@
 /**
- * IceCast â€” Weddell Sea Ice Prediction Dashboard
+ * IceCast Ã¢â‚¬â€ Weddell Sea Ice Prediction Dashboard
  * Frontend application logic with mock data & visualizations
  */
 
@@ -176,7 +176,7 @@
                 const dist = Math.sqrt(Math.pow((c - cx) / cols, 2) + Math.pow((r - cy) / rows, 2));
                 const coastMask = dist < 0.35 ? 0 : 1;
 
-                // Ice edge â€” transition zone
+                // Ice edge Ã¢â‚¬â€ transition zone
                 const edgeNoise = Math.sin(c * 0.3 + r * 0.2 + dayIndex * 0.05) * 0.15;
                 const iceProb = Math.max(0, Math.min(1,
                     (spatial * seasonal + edgeNoise) * coastMask
@@ -194,7 +194,7 @@
     }
 
     function iceColorMap(value) {
-        // Dark ocean â†’ deep blue â†’ ice blue â†’ white
+        // Dark ocean Ã¢â€ â€™ deep blue Ã¢â€ â€™ ice blue Ã¢â€ â€™ white
         if (value < 0.05) return [10, 14, 30];         // Dark ocean
         if (value < 0.15) return [20, 40, 80];          // Deep water
         if (value < 0.3)  return [30, 60, 120];         // Transitional
@@ -757,7 +757,7 @@
             if (testRmse) testRmse.textContent = `${data.best_metrics.test_rmse_original} (0.60%)`;
             if (testMae) testMae.textContent = `${data.best_metrics.test_mae_original} (0.35%)`;
             if (params) params.textContent = data.parameters ? data.parameters.toLocaleString() : '76,833';
-            if (grid) grid.textContent = `${data.output_shape[0]}Ã—${data.output_shape[1]} (11 ch)`;
+            if (grid) grid.textContent = `${data.output_shape[0]}Ãƒâ€”${data.output_shape[1]} (11 ch)`;
 
             const sidebarStatus = $('.sidebar__status span');
             if (sidebarStatus) sidebarStatus.textContent = 'ConvLSTM Online (CPU)';
@@ -837,7 +837,7 @@
             { type: 'warning', title: 'High Wind Warning', desc: 'Wind speeds exceeding 15 m/s in sector SE-1. Ice drift rate may increase.', time: '5 hours ago' },
             { type: 'info', title: 'Model Retrained', desc: 'ConvLSTM updated with latest 7-day window. Test RMSE: 0.042 (-3% improvement).', time: '12 hours ago' },
             { type: 'warning', title: 'Unusual Current Pattern', desc: 'Southern sector showing reversed current flow. Potential upwelling event.', time: '1 day ago' },
-            { type: 'critical', title: 'Ice Extent Below Threshold', desc: 'Total extent dropped below 5M kmÂ² seasonal benchmark.', time: '1 day ago' },
+            { type: 'critical', title: 'Ice Extent Below Threshold', desc: 'Total extent dropped below 5M kmÃ‚Â² seasonal benchmark.', time: '1 day ago' },
             { type: 'info', title: 'Data Ingestion Complete', desc: 'ERA5 and Copernicus data synced. 1,212 time steps available.', time: '2 days ago' },
             { type: 'warning', title: 'Prediction Confidence Drop', desc: 'Model confidence for 7-day forecast dropped to 68% (below 75% threshold).', time: '3 days ago' },
             { type: 'info', title: 'NSIDC Calibration Update', desc: 'Passive microwave sensor calibration applied. Data quality improved.', time: '4 days ago' },
@@ -986,13 +986,13 @@
             const lat = -60 - (y / rect.height) * 20;  // -60 to -80
 
             coordsEl.innerHTML = `
-                <span>Lat: ${lat.toFixed(2)}Â°</span>
-                <span>Lon: ${lon.toFixed(2)}Â°</span>
+                <span>Lat: ${lat.toFixed(2)}Ã‚Â°</span>
+                <span>Lon: ${lon.toFixed(2)}Ã‚Â°</span>
             `;
         });
 
         container.addEventListener('mouseleave', () => {
-            coordsEl.innerHTML = '<span>Lat: â€”</span><span>Lon: â€”</span>';
+            coordsEl.innerHTML = '<span>Lat: Ã¢â‚¬â€</span><span>Lon: Ã¢â‚¬â€</span>';
         });
     }
 
@@ -1121,7 +1121,7 @@
     }
 
     // ======================================================================
-    // NAVIGATION â€” Google Maps-style A* Route Planning + Animated Ship
+    // NAVIGATION Ã¢â‚¬â€ Google Maps-style A* Route Planning + Animated Ship
     // ======================================================================
 
     // Compact MinHeap for A* priority queue
@@ -1147,20 +1147,21 @@
     const NAV = {
         GPS_BOUNDS: { lat_min:-78.0, lat_max:-60.0, lon_min:-60.0, lon_max:-20.0 },
         ship: { lat:-70.5, lon:-42.0, heading:0 },
-        wakePoints: [],          // recent positions for trail
-        plannedRoute: [],        // [{lat,lon}] from A*
-        routeSegDists: [],       // cumulative km per segment
+        wakePoints: [],
+        plannedRoute: [],
+        routeSegDists: [],
         routeTotalKm: 0,
         routeCompletedKm: 0,
-        destination: null,       // {lat,lon}
+        destination: null,
         icebergs: [],
-        sicGrid: null,           // 2-D SIC array [row][col]
+        sicGrid: null,
         gridLats: null,
         gridLons: null,
-        navState: 'IDLE',        // IDLE | PLANNED | NAVIGATING | ARRIVED
-        navSpeed: 12,            // knots (visual)
+        navState: 'IDLE',
+        navSpeed: 12,
         showIceLayer: true,
         showGrid: false,
+        showRiskLayer: false,
         zoom: 1.0,
         animFrame: null,
         lastTime: 0,
@@ -1170,6 +1171,15 @@
         icebergInterval: 5000,
         totalDistKm: 0,
         initialized: false,
+        // DSS state
+        dssRoutes: {},           // { A: {waypoints,stats,label,color}, B:..., C:... }
+        dssRanked: [],           // sorted ranked route objects from /api/navigation/rank
+        dssSelectedRoute: null,  // 'A' | 'B' | 'C'
+        riskGrid: null,          // composite risk 2D array
+        riskLats: null,
+        riskLons: null,
+        compositeRisk: null,     // latest ship-position risk
+        compositeRiskTimer: null,
     };
 
     // ---- Coordinate helpers ----
@@ -1187,7 +1197,7 @@
                  lon: b.lon_min + (x / W) * (b.lon_max - b.lon_min) };
     }
 
-    // Apply zoom transform â€” returns adjusted pixel pos when zoom is active
+    // Apply zoom transform Ã¢â‚¬â€ returns adjusted pixel pos when zoom is active
     function applyZoom(px, shipPx, W, H) {
         if (NAV.zoom <= 1.0) return px;
         const cx = navClamp(shipPx.x, W * 0.2, W * 0.8);
@@ -1195,7 +1205,7 @@
         return { x: cx + (px.x - cx) * NAV.zoom, y: cy + (px.y - cy) * NAV.zoom };
     }
 
-    // Inverse: canvas event coords â†’ logical (pre-zoom) coords
+    // Inverse: canvas event coords Ã¢â€ â€™ logical (pre-zoom) coords
     function unzoom(ex, ey, W, H) {
         if (NAV.zoom <= 1.0) return { x: ex, y: ey };
         const sp = ll2px(NAV.ship.lat, NAV.ship.lon, W, H);
@@ -1244,7 +1254,7 @@
         const cost = (r, c) => {
             const sic = sicGrid[r][c] || 0;
             let base;
-            if (sic > 0.92) return Infinity;   // Dense pack ice â€” wall
+            if (sic > 0.92) return Infinity;   // Dense pack ice Ã¢â‚¬â€ wall
             else if (sic > 0.80) base = 25;
             else if (sic > 0.65) base = 12;
             else if (sic > 0.50) base = 6;
@@ -1393,6 +1403,32 @@
             ctx.fillStyle=gr; ctx.fillRect(0,0,W,H);
         }
 
+        // 2b. Risk overlay layer
+        if (NAV.showRiskLayer && NAV.riskGrid && NAV.riskLats && NAV.riskLons) {
+            const rg=NAV.riskGrid, rl=NAV.riskLats, rll=NAV.riskLons;
+            const rows=rg.length, cols=rg[0].length;
+            const cW=W/cols, cH=H/rows;
+            for (let r=0;r<rows;r++) for (let c=0;c<cols;c++) {
+                const risk=rg[r][c];
+                if (risk < 0.05) continue;
+                const pt=zpt(rl[r],rll[c]);
+                // Green -> Amber -> Red gradient
+                let rCol;
+                if (risk < 0.30) {
+                    const t=risk/0.30;
+                    rCol=`rgba(${Math.round(52+t*193)},${Math.round(211-t*101)},${Math.round(153-t*93)},${(0.15+t*0.25).toFixed(2)})`;
+                } else if (risk < 0.60) {
+                    const t=(risk-0.30)/0.30;
+                    rCol=`rgba(${Math.round(245-t*6)},${Math.round(110+t*19)},${Math.round(60-t*49)},${(0.40+t*0.20).toFixed(2)})`;
+                } else {
+                    const t=(risk-0.60)/0.40;
+                    rCol=`rgba(${Math.round(239+t*16)},${Math.round(68-t*68)},${Math.round(11+t*11)},${(0.60+t*0.25).toFixed(2)})`;
+                }
+                ctx.fillStyle=rCol;
+                ctx.fillRect(pt.x - cW*Z/2, pt.y - cH*Z/2, cW*Z+1, cH*Z+1);
+            }
+        }
+
         // 3. High-visibility GPS grid lines & lat/lon labels
         if (NAV.showGrid) {
             const b=NAV.GPS_BOUNDS;
@@ -1405,13 +1441,13 @@
             ctx.fillStyle='rgba(56,189,248,0.70)';
             ctx.font=`${Math.max(10, Math.round(11/Z))}px JetBrains Mono, monospace`;
             
-            // Latitude lines (-78° to -60°)
+            // Latitude lines (-78Â° to -60Â°)
             for (let lat=Math.ceil(b.lat_min); lat<=b.lat_max; lat+=2) {
                 const p=zpt(lat, b.lon_min);
                 ctx.beginPath(); ctx.moveTo(0, p.y); ctx.lineTo(W, p.y); ctx.stroke();
             }
             
-            // Longitude lines (-60° to -20°)
+            // Longitude lines (-60Â° to -20Â°)
             for (let lon=Math.ceil(b.lon_min/5)*5; lon<=b.lon_max; lon+=5) {
                 const p=zpt(b.lat_min, lon);
                 ctx.beginPath(); ctx.moveTo(p.x, 0); ctx.lineTo(p.x, H); ctx.stroke();
@@ -1428,22 +1464,40 @@
             ctx.fillStyle=gr; ctx.beginPath(); ctx.arc(pt.x,pt.y,r*3.5,0,Math.PI*2); ctx.fill();
         });
 
-        // 5. Planned route
-        if (NAV.plannedRoute.length > 1) {
-            const seg = NAV.routeTotalKm > 0
-                ? navClamp(Math.round((NAV.routeCompletedKm / NAV.routeTotalKm) * (NAV.plannedRoute.length-1)), 0, NAV.plannedRoute.length-2)
-                : 0;
-
-            // Completed portion (faint cyan)
-            if (seg > 0) {
-                ctx.strokeStyle='rgba(34,211,238,0.35)'; ctx.lineWidth=2*Z; ctx.setLineDash([]);
+        // 5. Planned route (active selected route from DSS, or legacy single route)
+        if (NAV.dssRanked && NAV.dssRanked.length > 0) {
+            // Draw inactive routes first, then the active route so it renders on top
+            const activeRoute = NAV.dssRanked.find(r => r.id === NAV.dssSelectedRoute);
+            const inactiveRoutes = NAV.dssRanked.filter(r => r.id !== NAV.dssSelectedRoute);
+            
+            [...inactiveRoutes, activeRoute].filter(Boolean).forEach(route => {
+                const wps = route.waypoints;
+                if (!wps || wps.length < 2) return;
+                const isActive = route.id === NAV.dssSelectedRoute;
+                ctx.strokeStyle = isActive ? route.color : route.color.replace(')', ',0.3)').replace('rgb','rgba');
+                ctx.lineWidth = isActive ? 2.5*Z : 1.2*Z;
+                ctx.setLineDash(isActive ? [] : [4*Z, 4*Z]);
+                ctx.globalAlpha = isActive ? 1 : 0.45;
                 ctx.beginPath();
-                for (let i=0;i<=seg;i++) { const p=zpt(NAV.plannedRoute[i].lat,NAV.plannedRoute[i].lon); i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y); }
+                const p0 = zpt(wps[0].lat, wps[0].lon);
+                ctx.moveTo(p0.x, p0.y);
+                for (let i=1;i<wps.length;i++) {
+                    const p=zpt(wps[i].lat,wps[i].lon);
+                    ctx.lineTo(p.x,p.y);
+                }
                 ctx.stroke();
-            }
+            });
+            ctx.globalAlpha = 1;
+        } else if (NAV.plannedRoute && NAV.plannedRoute.length > 0) {
+            // Legacy single route
+            const seg = NAV.routeSegment || 0;
 
-            // Upcoming portion (bright green dashed)
-            ctx.strokeStyle='rgba(34,197,94,0.9)'; ctx.lineWidth=2.5*Z; ctx.setLineDash([8*Z,4*Z]);
+            // Completed portion (gray/dimmed)
+            ctx.strokeStyle='rgba(156,163,175,0.8)'; ctx.lineWidth=1.5*Z; ctx.setLineDash([]);
+            ctx.beginPath();
+            for (let i=0;i<=seg;i++) { const p=zpt(NAV.plannedRoute[i].lat,NAV.plannedRoute[i].lon); i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y); }
+            ctx.stroke();
+
             ctx.beginPath(); let moved=false;
             for (let i=seg;i<NAV.plannedRoute.length;i++) {
                 const p=zpt(NAV.plannedRoute[i].lat,NAV.plannedRoute[i].lon);
@@ -1509,7 +1563,7 @@
             // Coord label
             if (Z >= 0.8) {
                 ctx.fillStyle='rgba(34,197,94,0.9)'; ctx.font=`bold ${8*Z}px JetBrains Mono,monospace`; ctx.textAlign='left';
-                ctx.fillText(`${NAV.destination.lat.toFixed(2)}Â°, ${NAV.destination.lon.toFixed(2)}Â°`, dp.x+10*Z, py-4*Z);
+                ctx.fillText(`${NAV.destination.lat.toFixed(2)}Ã‚Â°, ${NAV.destination.lon.toFixed(2)}Ã‚Â°`, dp.x+10*Z, py-4*Z);
             }
         }
 
@@ -1526,7 +1580,7 @@
         ctx.strokeStyle=`rgba(34,211,238,${(0.5*pulse).toFixed(2)})`; ctx.lineWidth=1.5*Z;
         ctx.beginPath(); ctx.arc(shipPx.x,shipPx.y,(11+pulse*6)*Z,0,Math.PI*2); ctx.stroke();
 
-        // Ship body â€” triangle rotated to heading
+        // Ship body Ã¢â‚¬â€ triangle rotated to heading
         const heading = NAV.ship.heading * Math.PI / 180;
         const sz = 9*Z;
         ctx.save();
@@ -1539,10 +1593,10 @@
         // GPS label
         if (Z >= 0.9) {
             ctx.fillStyle='rgba(34,211,238,0.9)'; ctx.font=`bold ${8.5*Z}px JetBrains Mono,monospace`; ctx.textAlign='left';
-            ctx.fillText(`${NAV.ship.lat.toFixed(3)}Â°, ${NAV.ship.lon.toFixed(3)}Â°`, shipPx.x+13*Z, shipPx.y-5*Z);
+            ctx.fillText(`${NAV.ship.lat.toFixed(3)}Ã‚Â°, ${NAV.ship.lon.toFixed(3)}Ã‚Â°`, shipPx.x+13*Z, shipPx.y-5*Z);
         }
 
-        // 10. HUD overlays (NOT zoomed â€” reset transform)
+        // 10. HUD overlays (NOT zoomed Ã¢â‚¬â€ reset transform)
         ctx.restore();
         ctx.save();
         drawCompassRose(ctx, W-54, 54, 30);
@@ -1589,7 +1643,7 @@
     // ---- Navigation animation ----
     function advanceShip(dt) {
         if (NAV.plannedRoute.length < 2 || NAV.routeTotalKm <= 0) return;
-        const speedKmS = NAV.navSpeed * 1.852 / 3600 * 220; // 220Ã— time compression
+        const speedKmS = NAV.navSpeed * 1.852 / 3600 * 220; // 220Ãƒâ€” time compression
         NAV.routeCompletedKm = Math.min(NAV.routeTotalKm, NAV.routeCompletedKm + speedKmS * dt);
 
         const segs = NAV.routeSegDists;
@@ -1599,9 +1653,9 @@
         if (segIdx >= NAV.plannedRoute.length-1) {
             NAV.ship.lat = NAV.destination.lat; NAV.ship.lon = NAV.destination.lon;
             NAV.navState = 'ARRIVED';
-            updateNavHUD(); updateRouteStatus('âœ… Arrived at destination!');
+            updateNavHUD(); updateRouteStatus('Ã¢Å“â€¦ Arrived at destination!');
             const btn=document.getElementById('btn-start-nav');
-            if (btn) { btn.textContent='âœ… Arrived'; btn.disabled=true; }
+            if (btn) { btn.textContent='Ã¢Å“â€¦ Arrived'; btn.disabled=true; }
             return;
         }
 
@@ -1631,8 +1685,8 @@
     function updateNavHUD() {
         const $ = id => document.getElementById(id);
         const set = (id, v) => { const el=$(id); if(el) el.textContent=v; };
-        set('ship-lat', `${NAV.ship.lat.toFixed(4)}Â°`);
-        set('ship-lon', `${NAV.ship.lon.toFixed(4)}Â°`);
+        set('ship-lat', `${NAV.ship.lat.toFixed(4)}Ã‚Â°`);
+        set('ship-lon', `${NAV.ship.lon.toFixed(4)}Ã‚Â°`);
         set('ship-path-count', NAV.wakePoints.length);
         set('ship-dist', `${NAV.totalDistKm.toFixed(1)} km`);
 
@@ -1642,12 +1696,12 @@
                 const rem=NAV.routeTotalKm-NAV.routeCompletedKm;
                 const sKmS=NAV.navSpeed*1.852/3600*220;
                 const pct=Math.round((NAV.routeCompletedKm/NAV.routeTotalKm)*100);
-                eta.textContent=`${pct}% Â· ETA ${Math.ceil(rem/sKmS)}s`;
+                eta.textContent=`${pct}% Ã‚Â· ETA ${Math.ceil(rem/sKmS)}s`;
             } else if (NAV.navState==='ARRIVED') {
-                eta.textContent='âœ… Arrived!';
+                eta.textContent='Ã¢Å“â€¦ Arrived!';
             } else if (NAV.navState==='PLANNED') {
                 eta.textContent=`${NAV.routeTotalKm.toFixed(0)} km route`;
-            } else { eta.textContent='â€”'; }
+            } else { eta.textContent='Ã¢â‚¬â€'; }
         }
     }
 
@@ -1664,50 +1718,216 @@
         NAV.navState = 'IDLE';
         NAV.plannedRoute = []; NAV.routeTotalKm = 0; NAV.routeCompletedKm = 0;
         const dd=document.getElementById('nav-dest-display');
-        if (dd) dd.textContent=`${lat.toFixed(3)}Â°, ${lon.toFixed(3)}Â°`;
+        if (dd) dd.textContent=`${lat.toFixed(3)}Ã‚Â°, ${lon.toFixed(3)}Ã‚Â°`;
         const nb=document.getElementById('btn-start-nav');
-        if (nb) { nb.disabled=true; nb.textContent='â–¶ \u00A0Auto-Navigate'; }
+        if (nb) { nb.disabled=true; nb.textContent='Ã¢â€“Â¶ \u00A0Auto-Navigate'; }
         updateNavHUD();
-        updateRouteStatus(`ðŸ“ Destination: ${lat.toFixed(3)}Â°, ${lon.toFixed(3)}Â° â€” click Calculate Route`);
+        updateRouteStatus(`Ã°Å¸â€œ  Destination: ${lat.toFixed(3)}Ã‚Â°, ${lon.toFixed(3)}Ã‚Â° Ã¢â‚¬â€ click Calculate Route`);
     }
 
-    function calculateRoute() {
-        if (!NAV.destination) { updateRouteStatus('âš ï¸ Double-click the map to set a destination first'); return; }
-        if (!NAV.sicGrid)     { updateRouteStatus('â³ Ice data loading â€” try again in a moment'); fetchIcePredictionForNav(); return; }
+    // ============================================================
+    // DSS â€” AI Route Calculation & Composite Risk HUD
+    // ============================================================
 
-        updateRouteStatus('ðŸ”„ Calculating optimal low-ice routeâ€¦');
+    function calculateRoute() {
+        if (!NAV.destination) { updateRouteStatus('&#9888; Double-click the map to set a destination first'); return; }
+        if (!NAV.sicGrid)     { updateRouteStatus('&#8987; Ice data loading â€” try again in a moment'); fetchIcePredictionForNav(); return; }
+
+        const loading = document.getElementById('dss-loading');
+        const cards   = document.getElementById('dss-route-cards');
+        const loadTxt = document.getElementById('dss-loading-text');
+        if (loading) loading.style.display = 'block';
+        if (cards)   cards.style.display   = 'none';
+        if (loadTxt) loadTxt.textContent   = 'Generating 3 candidate routes via A*...';
+        updateRouteStatus('&#127757; Calculating Safe / Balanced / Fast routes...');
         const btn = document.getElementById('btn-calc-route');
         if (btn) btn.disabled = true;
 
-        setTimeout(() => {
-            const raw = astarRoute(NAV.sicGrid, NAV.gridLats, NAV.gridLons, NAV.icebergs,
-                                   NAV.ship.lat, NAV.ship.lon, NAV.destination.lat, NAV.destination.lon);
-            if (btn) btn.disabled = false;
-
-            if (!raw || raw.length < 2) {
-                updateRouteStatus('âŒ Route blocked â€” destination may be in dense pack ice'); return;
+        fetch('/api/navigation/routes', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                start: { lat: NAV.ship.lat, lon: NAV.ship.lon },
+                destination: { lat: NAV.destination.lat, lon: NAV.destination.lon }
+            })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.status !== 'success' || !data.routes) throw new Error(data.message || 'Route generation failed');
+            NAV.dssRoutes = data.routes;
+            const routeArr = Object.entries(data.routes).map(([id, r]) => ({ id, waypoints: r.waypoints, color: r.color, rank: 99 }));
+            NAV.dssRanked = routeArr;
+            NAV.dssSelectedRoute = 'A';
+            const defaultWp = data.routes['A']?.waypoints || data.routes[Object.keys(data.routes)[0]]?.waypoints || [];
+            NAV.plannedRoute = defaultWp;
+            if (defaultWp.length > 1) {
+                const { total, segs } = routeDist(defaultWp);
+                NAV.routeTotalKm = total; NAV.routeSegDists = segs; NAV.routeCompletedKm = 0;
             }
-            const smoothed = smoothPath(raw, 4);
-            NAV.plannedRoute = smoothed;
-            const { total, segs } = routeDist(smoothed);
+            NAV.navState = 'PLANNED';
+            if (loadTxt) loadTxt.textContent = 'Ranking routes with Gemini AI...';
+            updateRouteStatus('&#129504; Ranking routes with AI...');
+            return fetch('/api/navigation/rank', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ routes: data.routes })
+            });
+        })
+        .then(r => r.json())
+        .then(rankData => {
+            if (btn) btn.disabled = false;
+            if (loading) loading.style.display = 'none';
+            if (rankData.status !== 'success') throw new Error(rankData.message || 'Ranking failed');
+            NAV.dssRanked = rankData.ranked_routes;
+            NAV.dssSelectedRoute = NAV.dssRanked[0]?.id || 'A';
+            const topRoute = NAV.dssRanked[0];
+            if (topRoute?.waypoints?.length > 1) {
+                NAV.plannedRoute = topRoute.waypoints;
+                const { total, segs } = routeDist(topRoute.waypoints);
+                NAV.routeTotalKm = total; NAV.routeSegDists = segs; NAV.routeCompletedKm = 0;
+            }
+            const badge = document.getElementById('dss-ai-badge');
+            if (badge) badge.style.display = rankData.ai_powered ? 'inline-flex' : 'none';
+            renderRouteCards(rankData.ranked_routes);
+            if (cards) cards.style.display = 'block';
+            const nb = document.getElementById('btn-start-nav');
+            if (nb) { nb.disabled = false; nb.textContent = '&#9654; \u00A0Auto-Navigate'; }
+            const top = rankData.ranked_routes[0];
+            updateRouteStatus(`&#9989; Route ${top.id} ranked #1 (${top.risk_level} risk, ${top.distance_km}km) â€” AI explanation ready`);
+            updateNavHUD();
+            fetchRiskGrid();
+        })
+        .catch(err => {
+            if (btn) btn.disabled = false;
+            if (loading) loading.style.display = 'none';
+            console.error('DSS error:', err);
+            updateRouteStatus(`&#10060; ${err.message || 'Route calculation failed'}`);
+        });
+    }
+
+    function renderRouteCards(rankedRoutes) {
+        const container = document.getElementById('dss-cards-container');
+        if (!container) return;
+        container.innerHTML = rankedRoutes.map(r => buildRouteCard(r)).join('');
+        rankedRoutes.forEach(route => {
+            const card = document.getElementById(`dss-card-${route.id}`);
+            if (card) card.addEventListener('click', () => selectRoute(route.id));
+        });
+        selectRoute(NAV.dssSelectedRoute || rankedRoutes[0]?.id);
+    }
+
+    function buildRouteCard(r) {
+        const rankClass = `dss-rank-badge--${r.rank}`;
+        const riskStyle = `background:${r.risk_color}22;color:${r.risk_color};border:1px solid ${r.risk_color}44;`;
+        const chips = (r.highlights || []).map(h =>
+            `<span class="dss-chip dss-chip--${h.type}">` +
+            (h.type === 'pro' ? '&#10003;' : '&#9888;') +
+            ` ${h.text}</span>`
+        ).join('');
+        return `
+        <div class="dss-route-card" id="dss-card-${r.id}">
+            <div class="dss-card-header">
+                <div class="dss-rank-badge ${rankClass}">#${r.rank}</div>
+                <div class="dss-card-route-id" style="background:${r.color};">${r.id}</div>
+                <span class="dss-card-label">${r.label}</span>
+                <span class="dss-risk-chip" style="${riskStyle}">${r.risk_level}</span>
+            </div>
+            <div class="dss-card-stats">
+                <div class="dss-card-stat">
+                    <span class="dss-card-stat__val">${r.distance_km}km</span>
+                    <span class="dss-card-stat__lbl">Distance</span>
+                </div>
+                <div class="dss-card-stat">
+                    <span class="dss-card-stat__val">${r.avg_sic_pct}%</span>
+                    <span class="dss-card-stat__lbl">Avg SIC</span>
+                </div>
+                <div class="dss-card-stat">
+                    <span class="dss-card-stat__val">${r.estimated_hours}h</span>
+                    <span class="dss-card-stat__lbl">ETA</span>
+                </div>
+            </div>
+            <div class="dss-card-explanation">${r.explanation || ''}</div>
+            <div class="dss-card-chips">${chips}</div>
+            <button class="btn btn--primary btn--sm dss-card-select-btn"
+                    onclick="event.stopPropagation();"
+                    id="dss-use-${r.id}">&#9658; Use This Route</button>
+        </div>`;
+    }
+
+    function selectRoute(routeId) {
+        NAV.dssSelectedRoute = routeId;
+        ['A','B','C'].forEach(id => {
+            const card = document.getElementById(`dss-card-${id}`);
+            if (card) card.classList.toggle('dss-route-card--active', id === routeId);
+        });
+        const route = NAV.dssRanked.find(r => r.id === routeId);
+        if (route?.waypoints?.length > 1) {
+            NAV.plannedRoute = route.waypoints;
+            const { total, segs } = routeDist(route.waypoints);
             NAV.routeTotalKm = total; NAV.routeSegDists = segs; NAV.routeCompletedKm = 0;
             NAV.navState = 'PLANNED';
-            updateRouteStatus(`âœ… Route: ${total.toFixed(0)} km Â· ${smoothed.length} waypoints via open water`);
-            updateNavHUD();
             const nb = document.getElementById('btn-start-nav');
-            if (nb) { nb.disabled=false; nb.textContent='â–¶ \u00A0Auto-Navigate'; }
-        }, 0);
+            if (nb) nb.disabled = false;
+        }
+    }
+
+    function fetchRiskGrid() {
+        fetch('/api/hazard/composite?full_grid=1')
+            .then(r => r.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    NAV.riskGrid = data.risk_grid;
+                    NAV.riskLats = data.latitudes;
+                    NAV.riskLons = data.longitudes;
+                }
+            }).catch(() => {});
+    }
+
+    function updateCompositeRiskHUD() {
+        fetch(`/api/hazard/composite?lat=${NAV.ship.lat.toFixed(4)}&lon=${NAV.ship.lon.toFixed(4)}`)
+            .then(r => r.json())
+            .then(data => {
+                if (data.status !== 'success') return;
+                const score = Math.round(data.risk_score * 100);
+                const level = (data.level || 'clear').toLowerCase();
+                const valEl = document.getElementById('dss-risk-value');
+                const lvlEl = document.getElementById('dss-risk-level');
+                const dial  = document.getElementById('dss-risk-dial');
+                const msgEl = document.getElementById('dss-risk-msg');
+                if (valEl) valEl.textContent = score;
+                if (lvlEl) lvlEl.textContent = data.level;
+                if (dial)  dial.className = 'dss-risk-dial dss-risk-dial--' + level;
+                const comps = data.components || {};
+                const setBar = (barId, pctId, val) => {
+                    const pct = Math.round(val * 100);
+                    const bar = document.getElementById(barId);
+                    const pctEl = document.getElementById(pctId);
+                    if (bar) bar.style.width = pct + '%';
+                    if (pctEl) pctEl.textContent = pct + '%';
+                };
+                setBar('dss-bar-sic', 'dss-pct-sic', comps.sic?.value || 0);
+                setBar('dss-bar-icb', 'dss-pct-icb', comps.iceberg?.value || 0);
+                setBar('dss-bar-unc', 'dss-pct-unc', comps.uncertainty?.value || 0);
+                const msgs = {
+                    CLEAR: 'Clear sailing â€” minimal ice and hazard risk.',
+                    LOW: 'Low risk â€” light ice conditions ahead.',
+                    MODERATE: 'Moderate risk â€” enhanced bridge watch recommended.',
+                    HIGH: 'High risk â€” significant ice and iceberg hazards.',
+                    CRITICAL: '&#128679; CRITICAL â€” avoid this area immediately!'
+                };
+                if (msgEl) msgEl.innerHTML = msgs[data.level] || `Risk score: ${data.risk_score}`;
+            }).catch(() => {});
     }
 
     function startNavigation() {
         if (NAV.navState !== 'PLANNED' || NAV.plannedRoute.length < 2) return;
         NAV.navState = 'NAVIGATING';
         NAV.routeCompletedKm = 0; NAV.wakePoints = [];
-        updateRouteStatus('ðŸš¢ Navigating along low-ice routeâ€¦');
+        updateRouteStatus('Ã°Å¸Å¡Â¢ Navigating along low-ice routeÃ¢â‚¬Â¦');
     }
 
     function stopNavigation() {
-        if (NAV.navState === 'NAVIGATING') { NAV.navState='PLANNED'; updateRouteStatus('â¸ Navigation paused'); }
+        if (NAV.navState === 'NAVIGATING') { NAV.navState='PLANNED'; updateRouteStatus('Ã¢ÂÂ¸ Navigation paused'); }
     }
 
     function setRandomDestination() {
@@ -1715,7 +1935,7 @@
         const lat = b.lat_min + Math.random()*(b.lat_max-b.lat_min);
         const lon = b.lon_min + Math.random()*(b.lon_max-b.lon_min);
         setDestination(lat, lon);
-        updateRouteStatus(`ðŸŽ² Random destination: ${lat.toFixed(3)}Â°, ${lon.toFixed(3)}Â° â€” click Calculate Route`);
+        updateRouteStatus(`Ã°Å¸Å½Â² Random destination: ${lat.toFixed(3)}Ã‚Â°, ${lon.toFixed(3)}Ã‚Â° Ã¢â‚¬â€ click Calculate Route`);
     }
 
     function fetchIcebergsForNav() {
@@ -1734,9 +1954,9 @@
         const list=document.getElementById('iceberg-list'); if(!list) return;
         list.innerHTML = icebergs.map(icb=>`
             <div class="iceberg-item" data-lat="${icb.lat}" data-lon="${icb.lon}">
-                <span class="iceberg-item__icon">â–²</span>
+                <span class="iceberg-item__icon">Ã¢â€“Â²</span>
                 <span class="iceberg-item__name">${icb.name}</span>
-                <span class="iceberg-item__coords">${icb.lat.toFixed(2)}Â°, ${icb.lon.toFixed(2)}Â°</span>
+                <span class="iceberg-item__coords">${icb.lat.toFixed(2)}Ã‚Â°, ${icb.lon.toFixed(2)}Ã‚Â°</span>
                 <span class="iceberg-item__size">${icb.size_km.toFixed(1)} km</span>
             </div>`).join('');
     }
@@ -1751,12 +1971,12 @@
 
     function fetchHazard(lat, lon) {
         const badge=document.getElementById('nav-hazard-badge');
-        if (badge) { badge.textContent='CHECKINGâ€¦'; badge.className='nav-hazard-badge'; }
+        if (badge) { badge.textContent='CHECKINGÃ¢â‚¬Â¦'; badge.className='nav-hazard-badge'; }
         fetch(`/api/navigation/hazards?lat=${lat.toFixed(4)}&lon=${lon.toFixed(4)}`)
             .then(r=>r.json()).then(data=>{
                 if (badge) { badge.textContent=data.level||'?'; badge.className=`nav-hazard-badge nav-hazard-badge--${(data.level||'').toLowerCase()}`; }
-                const s=document.getElementById('hazard-sic'); if(s) s.textContent=data.ice_concentration!=null?`${data.ice_concentration}%`:'â€”';
-                const m=document.getElementById('hazard-msg'); if(m) m.textContent=data.message||'â€”';
+                const s=document.getElementById('hazard-sic'); if(s) s.textContent=data.ice_concentration!=null?`${data.ice_concentration}%`:'Ã¢â‚¬â€';
+                const m=document.getElementById('hazard-msg'); if(m) m.textContent=data.message||'Ã¢â‚¬â€';
             }).catch(()=>{});
     }
 
@@ -1764,12 +1984,12 @@
         const axX=document.getElementById('nav-axis-x'), axY=document.getElementById('nav-axis-y');
         if (!axX||!axY) return;
         const b=NAV.GPS_BOUNDS;
-        axX.innerHTML=''; for(let lon=b.lon_min;lon<=b.lon_max;lon+=10){const s=document.createElement('span');s.textContent=`${lon}Â°`;axX.appendChild(s);}
-        axY.innerHTML=''; for(let lat=b.lat_max;lat>=b.lat_min;lat-=3){const s=document.createElement('span');s.textContent=`${lat}Â°`;axY.appendChild(s);}
+        axX.innerHTML=''; for(let lon=b.lon_min;lon<=b.lon_max;lon+=10){const s=document.createElement('span');s.textContent=`${lon}Ã‚Â°`;axX.appendChild(s);}
+        axY.innerHTML=''; for(let lat=b.lat_max;lat>=b.lat_min;lat-=3){const s=document.createElement('span');s.textContent=`${lat}Ã‚Â°`;axY.appendChild(s);}
     }
 
     function updateZoomDisplay() {
-        const el=document.getElementById('nav-zoom-level'); if(el) el.textContent=`${NAV.zoom.toFixed(1)}Ã—`;
+        const el=document.getElementById('nav-zoom-level'); if(el) el.textContent=`${NAV.zoom.toFixed(1)}Ãƒâ€”`;
     }
 
     function initNavigationMap() {
@@ -1781,12 +2001,16 @@
         fetchIcebergsForNav();
         NAV.icebergPollTimer = setInterval(fetchIcebergsForNav, NAV.icebergInterval);
 
+        // Start composite risk HUD polling (every 5 s)
+        updateCompositeRiskHUD();
+        NAV.compositeRiskTimer = setInterval(updateCompositeRiskHUD, 5000);
+
         fetch('/api/ship/position').then(r=>r.json()).then(data=>{
             if (data.status==='success') { NAV.ship.lat=data.position.lat; NAV.ship.lon=data.position.lon; updateNavHUD(); fetchHazard(NAV.ship.lat,NAV.ship.lon); }
         }).catch(()=>{});
 
         fetchHazard(NAV.ship.lat, NAV.ship.lon);
-        updateRouteStatus('ðŸ—ºï¸ Double-click the map to drop a destination pin');
+        updateRouteStatus('Ã°Å¸â€”ÂºÃ¯Â¸  Double-click the map to drop a destination pin');
         if (NAV.animFrame) cancelAnimationFrame(NAV.animFrame);
         NAV.lastTime = 0;
         requestAnimationFrame(renderNavCanvas);
@@ -1796,7 +2020,7 @@
         const wrap=document.getElementById('nav-map-wrap');
         if (canvas && wrap) {
 
-            // Double-click â†’ set destination
+            // Double-click Ã¢â€ â€™ set destination
             canvas.addEventListener('dblclick', e => {
                 const rect=wrap.getBoundingClientRect();
                 const { x, y } = unzoom(e.clientX-rect.left, e.clientY-rect.top, wrap.clientWidth, wrap.clientHeight);
@@ -1805,7 +2029,7 @@
                 if (lat>=b.lat_min&&lat<=b.lat_max&&lon>=b.lon_min&&lon<=b.lon_max) setDestination(lat, lon);
             });
 
-            // Single click â†’ move ship (when not navigating)
+            // Single click Ã¢â€ â€™ move ship (when not navigating)
             canvas.addEventListener('click', e => {
                 if (NAV.navState==='NAVIGATING') return;
                 const rect=wrap.getBoundingClientRect();
@@ -1822,15 +2046,15 @@
                 fetch('/api/ship/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({lat,lon})}).catch(()=>{});
             });
 
-            // Hover â†’ GPS readout + iceberg tooltip
+            // Hover Ã¢â€ â€™ GPS readout + iceberg tooltip
             canvas.addEventListener('mousemove', e => {
                 const rect=wrap.getBoundingClientRect();
                 const { x, y } = unzoom(e.clientX-rect.left, e.clientY-rect.top, wrap.clientWidth, wrap.clientHeight);
                 const { lat, lon } = px2ll(x, y, wrap.clientWidth, wrap.clientHeight);
                 const ce=document.getElementById('nav-cursor-coords'), latEl=document.getElementById('nav-cursor-lat'), lonEl=document.getElementById('nav-cursor-lon');
                 if(ce) ce.style.display='block';
-                if(latEl) latEl.textContent=`${lat.toFixed(3)}Â°S`;
-                if(lonEl) lonEl.textContent=`${Math.abs(lon).toFixed(3)}Â°W`;
+                if(latEl) latEl.textContent=`${lat.toFixed(3)}Ã‚Â°S`;
+                if(lonEl) lonEl.textContent=`${Math.abs(lon).toFixed(3)}Ã‚Â°W`;
 
                 let nearby=null, minD=Infinity;
                 NAV.icebergs.forEach(icb=>{
@@ -1843,7 +2067,7 @@
                 if(tip){
                     if(nearby){
                         tip.style.display='block'; tip.style.left=(e.clientX-rect.left+14)+'px'; tip.style.top=(e.clientY-rect.top-10)+'px';
-                        tip.innerHTML=`<strong style="color:#f59e0b;">â–² ${nearby.name}</strong><br>${nearby.lat.toFixed(3)}Â°, ${nearby.lon.toFixed(3)}Â°<br>Size: ${nearby.size_km.toFixed(1)} km<br>Heading: ${nearby.heading.toFixed(0)}Â°`;
+                        tip.innerHTML=`<strong style="color:#f59e0b;">Ã¢â€“Â² ${nearby.name}</strong><br>${nearby.lat.toFixed(3)}Ã‚Â°, ${nearby.lon.toFixed(3)}Ã‚Â°<br>Size: ${nearby.size_km.toFixed(1)} km<br>Heading: ${nearby.heading.toFixed(0)}Ã‚Â°`;
                     } else { tip.style.display='none'; }
                 }
             });
@@ -1852,7 +2076,7 @@
                 const tip=document.getElementById('nav-tooltip'); if(tip) tip.style.display='none';
             });
 
-            // Scroll â†’ zoom
+            // Scroll Ã¢â€ â€™ zoom
             canvas.addEventListener('wheel', e=>{
                 e.preventDefault();
                 NAV.zoom = navClamp(NAV.zoom + (e.deltaY>0?-0.15:0.15), 0.8, 4.0);
@@ -1868,9 +2092,9 @@
         on('btn-start-nav', () => {
             const btn=document.getElementById('btn-start-nav');
             if (NAV.navState==='NAVIGATING') {
-                stopNavigation(); if(btn) btn.textContent='â–¶ \u00A0Auto-Navigate';
+                stopNavigation(); if(btn) btn.textContent='Ã¢â€“Â¶ \u00A0Auto-Navigate';
             } else {
-                startNavigation(); if(btn) btn.textContent='â¸ \u00A0Pause';
+                startNavigation(); if(btn) btn.textContent='Ã¢ÂÂ¸ \u00A0Pause';
             }
         });
 
@@ -1879,9 +2103,9 @@
         on('btn-nav-clear-path', () => {
             NAV.wakePoints=[]; NAV.totalDistKm=0; NAV.plannedRoute=[]; NAV.destination=null;
             NAV.navState='IDLE'; NAV.routeTotalKm=0; NAV.routeCompletedKm=0;
-            const dd=document.getElementById('nav-dest-display'); if(dd) dd.textContent='â€”';
-            const nb=document.getElementById('btn-start-nav'); if(nb){nb.disabled=true;nb.textContent='â–¶ \u00A0Auto-Navigate';}
-            updateNavHUD(); updateRouteStatus('ðŸ—ºï¸ Double-click the map to drop a destination pin');
+            const dd=document.getElementById('nav-dest-display'); if(dd) dd.textContent='Ã¢â‚¬â€';
+            const nb=document.getElementById('btn-start-nav'); if(nb){nb.disabled=true;nb.textContent='Ã¢â€“Â¶ \u00A0Auto-Navigate';}
+            updateNavHUD(); updateRouteStatus('Ã°Å¸â€”ÂºÃ¯Â¸Â Double-click the map to drop a destination pin');
         });
 
         on('btn-check-hazard', () => fetchHazard(NAV.ship.lat, NAV.ship.lon));
@@ -1902,9 +2126,17 @@
             NAV.icebergPollTimer=setInterval(fetchIcebergsForNav, NAV.icebergInterval);
         });
 
-        // Ice / grid toggles
-        const iceChk=document.getElementById('nav-show-ice');  if(iceChk)  iceChk.addEventListener('change',()=>NAV.showIceLayer=iceChk.checked);
-        const gridChk=document.getElementById('nav-show-grid'); if(gridChk) gridChk.addEventListener('change',()=>NAV.showGrid=gridChk.checked);
+        // Ice / Risk / Grid toggles
+        const iceChk  = document.getElementById('nav-show-ice');
+        const riskChk = document.getElementById('nav-show-risk');
+        const gridChk = document.getElementById('nav-show-grid');
+        if (iceChk)  iceChk.addEventListener('change',  () => { NAV.showIceLayer  = iceChk.checked; });
+        if (riskChk) riskChk.addEventListener('change', () => {
+            NAV.showRiskLayer = riskChk.checked;
+            if (NAV.showRiskLayer && !NAV.riskGrid) fetchRiskGrid();
+        });
+        if (gridChk) gridChk.addEventListener('change', () => { NAV.showGrid = gridChk.checked; });
+
 
         // Manual position
         on('btn-nav-set-pos', () => {
@@ -1966,7 +2198,7 @@
             [204,233, 'July (Peak Ice Season)'],
             [234,264, 'August'],
             [265,294, 'September (Spring onset)'],
-            [295,324, 'October–November (Antarctic Spring)'],
+            [295,324, 'Octoberâ€“November (Antarctic Spring)'],
             [325,365, 'December (Antarctic Summer)'],
         ];
         function getSeasonLabel(doy) {
@@ -1974,7 +2206,7 @@
             return 'Antarctic Season';
         }
 
-        // --- Paired slider ↔ number inputs ---
+        // --- Paired slider â†” number inputs ---
         const PAIRS = [
             ['fi-siconc','fi-siconc-range'], ['fi-u10','fi-u10-range'],
             ['fi-v10','fi-v10-range'], ['fi-wind-speed','fi-wind-speed-range'],
@@ -1982,12 +2214,19 @@
             ['fi-vo','fi-vo-range'], ['fi-current-speed','fi-current-speed-range'],
             ['fi-current-dir','fi-current-dir-range'], ['fi-doy','fi-doy-range'],
         ];
+
+        let runTimeout;
+        const debouncedRun = () => {
+            clearTimeout(runTimeout);
+            runTimeout = setTimeout(runCustomPrediction, 300);
+        };
+
         PAIRS.forEach(([numId, rangeId]) => {
             const num = document.getElementById(numId);
             const rng = document.getElementById(rangeId);
             if (!num || !rng) return;
-            num.addEventListener('input', () => { rng.value = num.value; if (numId === 'fi-doy') updateDoyDisplay(); });
-            rng.addEventListener('input', () => { num.value = rng.value; if (rangeId === 'fi-doy-range') updateDoyDisplay(); });
+            num.addEventListener('input', () => { rng.value = num.value; if (numId === 'fi-doy') updateDoyDisplay(); debouncedRun(); });
+            rng.addEventListener('input', () => { num.value = rng.value; if (rangeId === 'fi-doy-range') updateDoyDisplay(); debouncedRun(); });
         });
 
         // --- DOY season label and derived sin/cos ---
@@ -2032,6 +2271,7 @@
                 setVal('fi-current-dir','fi-current-dir-range', vals.current_dir);
                 setVal('fi-doy','fi-doy-range', vals.day_of_year);
                 updateDoyDisplay();
+                runCustomPrediction(); // Auto run on preset selection
             });
         });
 
@@ -2052,62 +2292,253 @@
             };
         }
 
-        // --- SIC color function (matches navigation map palette) ---
-        function sicColor(sic) {
-            if (sic <= 0) return null;
-            const t = Math.min(sic, 1.0);
-            if (t < 0.15) return `rgba(10,14,30,${(t/0.15).toFixed(2)})`;
-            if (t < 0.50) { const f=(t-0.15)/0.35; return `rgb(${Math.round(30+f*66)},${Math.round(58+f*107)},${Math.round(138+f*112)})`; }
-            if (t < 0.85) { const f=(t-0.50)/0.35; return `rgb(${Math.round(96+f*128)},${Math.round(165+f*77)},${Math.round(250+f*4)})`; }
-            const f=(t-0.85)/0.15; return `rgb(${Math.round(224+f*31)},${Math.round(242+f*13)},254)`;
+        // --- Scientific SIC colormap: deep ocean â†’ marginal â†’ pack â†’ dense ice ---
+        // Uses a perceptually-uniform palette inspired by NSIDC ice charts
+        function sicColorRGB(sic) {
+            const t = Math.max(0, Math.min(1, sic));
+            // 5-stop colormap:
+            // 0.00: #060C1A deep navy (open ocean)
+            // 0.15: #0E3A6E cobalt blue (sparse ice)
+            // 0.40: #0077B6 ocean blue (marginal)
+            // 0.65: #00B4D8 teal-cyan (pack ice)
+            // 0.85: #90E0EF light cyan (dense pack)
+            // 1.00: #FFFFFF white (solid ice)
+            const stops = [
+                [0.00, [  6, 12, 26]],
+                [0.15, [ 14, 58,110]],
+                [0.40, [  0,119,182]],
+                [0.65, [  0,180,216]],
+                [0.85, [144,224,239]],
+                [1.00, [255,255,255]],
+            ];
+            for (let i = 1; i < stops.length; i++) {
+                const [t0, c0] = stops[i-1];
+                const [t1, c1] = stops[i];
+                if (t <= t1) {
+                    const f = (t - t0) / (t1 - t0);
+                    // Gamma-corrected blend for perceptual uniformity
+                    const g = f < 0.5 ? 2*f*f : 1 - 2*(1-f)*(1-f);
+                    return [
+                        Math.round(c0[0] + g*(c1[0]-c0[0])),
+                        Math.round(c0[1] + g*(c1[1]-c0[1])),
+                        Math.round(c0[2] + g*(c1[2]-c0[2])),
+                    ];
+                }
+            }
+            return [255,255,255];
         }
 
-        // --- Render predicted SIC grid on canvas at full display resolution ---
-        function renderCustomCanvas(predicted, rows, cols) {
+        // --- Render predicted SIC grid with bilinear interpolation, contours, colorbar ---
+        function renderCustomCanvas(predicted, rows, cols, scenarioLabel, meanSic) {
             const canvas = document.getElementById('custom-pred-canvas');
             if (!canvas || !predicted || !predicted.length) return;
 
-            // Render at the actual display size so each grid cell is a real rectangle
+            const CBAR_W  = 52;   // colorbar width (px)
+            const PAD_TOP = 36;   // title band height
+            const PAD_BOT = 24;   // bottom padding
+            const PAD_L   = 8;
+
             const dpr = window.devicePixelRatio || 1;
             const container = canvas.parentElement;
-            const displayW = container ? Math.max(container.clientWidth, 200) : 600;
-            const displayH = Math.round(displayW * rows / cols);
+            const totalDisplayW = container ? Math.max(container.clientWidth, 300) : 640;
+            const mapW = totalDisplayW - CBAR_W - PAD_L;
+            const mapH = Math.round(mapW * rows / cols);
+            const totalDisplayH = mapH + PAD_TOP + PAD_BOT;
 
-            canvas.width  = Math.round(displayW * dpr);
-            canvas.height = Math.round(displayH * dpr);
-            canvas.style.width  = displayW + 'px';
-            canvas.style.height = displayH + 'px';
+            canvas.width  = Math.round(totalDisplayW * dpr);
+            canvas.height = Math.round(totalDisplayH * dpr);
+            canvas.style.width  = totalDisplayW + 'px';
+            canvas.style.height = totalDisplayH + 'px';
 
             const ctx = canvas.getContext('2d');
             ctx.save();
             ctx.scale(dpr, dpr);
 
-            // Dark ocean background
-            ctx.fillStyle = '#060a12';
-            ctx.fillRect(0, 0, displayW, displayH);
+            // â”€â”€ Background â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+            ctx.fillStyle = '#060C1A';
+            ctx.fillRect(0, 0, totalDisplayW, totalDisplayH);
 
-            const cellW = displayW / cols;
-            const cellH = displayH / rows;
+            // â”€â”€ Step 1: Render SIC grid into an offscreen ImageData (bilinear) â”€â”€
+            const offW = mapW, offH = mapH;
+            const offCanvas = document.createElement('canvas');
+            offCanvas.width = offW;
+            offCanvas.height = offH;
+            const offCtx = offCanvas.getContext('2d');
+            const imgData = offCtx.createImageData(offW, offH);
+            const buf = imgData.data;
 
-            for (let r = 0; r < rows; r++) {
-                for (let c = 0; c < cols; c++) {
-                    const sic = predicted[r][c] || 0;
-                    const color = sicColor(sic);
-                    if (!color) continue;
-                    ctx.fillStyle = color;
-                    // +0.5px overlap prevents hairline gaps between cells
-                    ctx.fillRect(
-                        Math.floor(c * cellW),
-                        Math.floor(r * cellH),
-                        Math.ceil(cellW) + 1,
-                        Math.ceil(cellH) + 1
-                    );
+            // Sample grid with bilinear interpolation
+            for (let py = 0; py < offH; py++) {
+                for (let px = 0; px < offW; px++) {
+                    // Map pixel â†’ fractional grid coords
+                    const gx = (px / offW) * (cols - 1);
+                    const gy = (py / offH) * (rows - 1);
+                    const gx0 = Math.floor(gx), gy0 = Math.floor(gy);
+                    const gx1 = Math.min(gx0+1, cols-1), gy1 = Math.min(gy0+1, rows-1);
+                    const fx = gx - gx0, fy = gy - gy0;
+
+                    const v00 = (predicted[gy0] && predicted[gy0][gx0]) || 0;
+                    const v10 = (predicted[gy0] && predicted[gy0][gx1]) || 0;
+                    const v01 = (predicted[gy1] && predicted[gy1][gx0]) || 0;
+                    const v11 = (predicted[gy1] && predicted[gy1][gx1]) || 0;
+                    const sic = v00*(1-fx)*(1-fy) + v10*fx*(1-fy) + v01*(1-fx)*fy + v11*fx*fy;
+
+                    const [r, g, b] = sicColorRGB(sic);
+                    const idx = (py * offW + px) * 4;
+                    buf[idx]   = r;
+                    buf[idx+1] = g;
+                    buf[idx+2] = b;
+                    buf[idx+3] = 255;
                 }
             }
+            offCtx.putImageData(imgData, 0, 0);
+            
+            // Draw offscreen canvas to main canvas (this respects ctx.scale)
+            ctx.drawImage(offCanvas, PAD_L, PAD_TOP, mapW, mapH);
+
+            // â”€â”€ Step 2: Contour lines at key SIC thresholds â”€â”€
+            const contours = [
+                { level: 0.15, color: 'rgba(52,211,153,0.85)', label: '15%', dash: [] },
+                { level: 0.50, color: 'rgba(251,191,36,0.9)',  label: '50%', dash: [6,3] },
+                { level: 0.85, color: 'rgba(239,68,68,0.85)',  label: '85%', dash: [3,3] },
+            ];
+
+            contours.forEach(({ level, color, dash }) => {
+                ctx.beginPath();
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 1.5;
+                ctx.setLineDash(dash);
+
+                // March through grid to find edges crossing the contour level
+                const cw = mapW / cols, ch = mapH / rows;
+                for (let r2 = 0; r2 < rows - 1; r2++) {
+                    for (let c2 = 0; c2 < cols - 1; c2++) {
+                        const v = predicted[r2][c2] || 0;
+                        const vr = (predicted[r2][c2+1]) || 0;
+                        const vd = (predicted[r2+1] && predicted[r2+1][c2]) || 0;
+
+                        const x0 = PAD_L + c2 * cw, y0 = PAD_TOP + r2 * ch;
+                        // Horizontal edge
+                        if ((v < level) !== (vr < level)) {
+                            const f = (level - v) / (vr - v);
+                            const xc = x0 + f * cw;
+                            ctx.moveTo(xc, y0);
+                            ctx.lineTo(xc, y0 + ch);
+                        }
+                        // Vertical edge
+                        if ((v < level) !== (vd < level)) {
+                            const f = (level - v) / (vd - v);
+                            const yc = y0 + f * ch;
+                            ctx.moveTo(x0, yc);
+                            ctx.lineTo(x0 + cw, yc);
+                        }
+                    }
+                }
+                ctx.stroke();
+                ctx.setLineDash([]);
+            });
+
+            // â”€â”€ Step 3: Lat/lon grid lines (subtle) â”€â”€
+            ctx.strokeStyle = 'rgba(255,255,255,0.10)';
+            ctx.lineWidth = 0.8;
+            const gridLines = 4;
+            for (let i = 1; i < gridLines; i++) {
+                const x = PAD_L + (mapW / gridLines) * i;
+                const y = PAD_TOP + (mapH / gridLines) * i;
+                ctx.beginPath(); ctx.moveTo(x, PAD_TOP); ctx.lineTo(x, PAD_TOP + mapH); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(PAD_L, y); ctx.lineTo(PAD_L + mapW, y); ctx.stroke();
+            }
+
+            // â”€â”€ Step 4: Colorbar â”€â”€
+            const cbX = PAD_L + mapW + 10, cbY = PAD_TOP + 4;
+            const cbH = mapH - 8, cbW = 14;
+
+            const grad = ctx.createLinearGradient(0, cbY, 0, cbY + cbH);
+            // Top = high SIC (white), bottom = low (dark)
+            const nStops = 20;
+            for (let i = 0; i <= nStops; i++) {
+                const sic = 1 - (i / nStops);
+                const [r, g, b] = sicColorRGB(sic);
+                grad.addColorStop(i/nStops, `rgb(${r},${g},${b})`);
+            }
+            ctx.fillStyle = grad;
+            ctx.fillRect(cbX, cbY, cbW, cbH);
+            ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+            ctx.lineWidth = 0.5;
+            ctx.strokeRect(cbX, cbY, cbW, cbH);
+
+            // Colorbar ticks & contour level markers
+            ctx.font = `${Math.round(9 * Math.min(dpr,1.5))}px 'Inter', sans-serif`;
+            ctx.textAlign = 'left';
+            const ticks = [0, 0.15, 0.50, 0.85, 1.0];
+            const tickLabels = ['0%', '15%', '50%', '85%', '100%'];
+            ticks.forEach((v, i) => {
+                const y2 = cbY + cbH * (1 - v);
+                ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+                ctx.lineWidth = 0.8;
+                ctx.beginPath(); ctx.moveTo(cbX, y2); ctx.lineTo(cbX + cbW + 4, y2); ctx.stroke();
+                ctx.fillStyle = 'rgba(200,220,240,0.9)';
+                ctx.fillText(tickLabels[i], cbX + cbW + 6, y2 + 3.5);
+            });
+
+            // Colorbar contour markers
+            contours.forEach(({ level, color, label }) => {
+                const y2 = cbY + cbH * (1 - level);
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.arc(cbX - 5, y2, 3, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // â”€â”€ Step 5: Title band â”€â”€
+            ctx.fillStyle = 'rgba(6,12,26,0.85)';
+            ctx.fillRect(0, 0, totalDisplayW, PAD_TOP);
+
+            ctx.font = `bold ${Math.round(11)}px 'Inter', sans-serif`;
+            ctx.fillStyle = '#E2E8F0';
+            ctx.textAlign = 'left';
+            ctx.fillText(scenarioLabel || 'Predicted Sea Ice Concentration', PAD_L + 6, 14);
+
+            ctx.font = `${Math.round(10)}px 'Inter', sans-serif`;
+            ctx.fillStyle = '#38BDF8';
+            ctx.textAlign = 'right';
+            ctx.fillText(`Mean SIC: ${meanSic !== undefined ? (meanSic*100).toFixed(1)+'%' : 'â€”'}`, totalDisplayW - CBAR_W - 4, 14);
+
+            // Axis labels
+            ctx.font = `${Math.round(8.5)}px 'Inter', sans-serif`;
+            ctx.fillStyle = 'rgba(148,163,184,0.7)';
+            ctx.textAlign = 'center';
+            ctx.fillText('W  â†  Longitude  â†’  E', PAD_L + mapW/2, PAD_TOP + mapH + 16);
+
+            ctx.save();
+            ctx.translate(PAD_L - 2, PAD_TOP + mapH/2);
+            ctx.rotate(-Math.PI/2);
+            ctx.textAlign = 'center';
+            ctx.fillText('S  â†  Latitude  â†’  N', 0, 0);
+            ctx.restore();
+
+            // â”€â”€ Step 6: Legend for contour lines â”€â”€
+            const legX = PAD_L + 8, legY = PAD_TOP + mapH - 44;
+            ctx.fillStyle = 'rgba(6,12,26,0.75)';
+            ctx.beginPath();
+            ctx.roundRect(legX - 4, legY - 2, 95, 40, 4);
+            ctx.fill();
+            contours.forEach(({ level, color, label, dash }, i) => {
+                const ly = legY + 6 + i * 12;
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 1.5;
+                ctx.setLineDash(dash);
+                ctx.beginPath(); ctx.moveTo(legX, ly); ctx.lineTo(legX + 18, ly); ctx.stroke();
+                ctx.setLineDash([]);
+                ctx.fillStyle = 'rgba(226,232,240,0.9)';
+                ctx.font = `${Math.round(8.5)}px 'Inter', sans-serif`;
+                ctx.textAlign = 'left';
+                ctx.fillText(`${label} ice edge`, legX + 22, ly + 3);
+            });
 
             ctx.restore();
 
-            // Hide the "click Run" placeholder
+            // Hide the placeholder
             const placeholder = document.getElementById('custom-canvas-placeholder');
             if (placeholder) placeholder.style.display = 'none';
         }
@@ -2119,7 +2550,7 @@
             const setEl = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
 
             setEl('cr-mean-sic', metrics.mean_sic_pct.toFixed(1) + '%');
-            setEl('cr-extent', metrics.ice_extent_mkm2 + ' M km²');
+            setEl('cr-extent', metrics.ice_extent_mkm2 + ' M kmÂ²');
             setEl('cr-danger', metrics.danger_level);
 
             const dangerEl = document.getElementById('cr-danger');
@@ -2150,7 +2581,7 @@
             const btn = document.getElementById('btn-run-custom');
             if (!btn) return;
             btn.disabled = true;
-            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" style="animation:spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Running…';
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" style="animation:spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Runningâ€¦';
 
             const features = getFeatureValues();
 
@@ -2165,7 +2596,11 @@
 
                 if (data.status === 'success' && data.predicted) {
                     const shape = data.shape || [37, 81];
-                    renderCustomCanvas(data.predicted, shape[0], shape[1]);
+                    const mean  = data.metrics ? data.metrics.mean_sic : undefined;
+                    // Build scenario label from active preset or default
+                    const activePreset = document.querySelector('.preset-btn.btn--active-preset');
+                    const label = activePreset ? activePreset.textContent.trim() : 'Custom Scenario';
+                    renderCustomCanvas(data.predicted, shape[0], shape[1], label, mean);
                     updateCustomResults(data.metrics);
                 } else {
                     alert('Prediction error: ' + (data.error || data.message || 'Unknown error'));
@@ -2185,3 +2620,376 @@
 
 })();
 
+
+// ==========================================
+// Analytics Tab Visualization (Chart.js)
+// ==========================================
+function initAnalytics() {
+    if (typeof Chart === 'undefined') {
+        console.warn('[Analytics] Chart.js not loaded yet, retrying in 500ms');
+        setTimeout(initAnalytics, 500);
+        return;
+    }
+
+    // ── Feature Distribution Table ────────────────────────────────────────────
+    var features = [
+        { name: 'Sea Ice Conc (siconc)', mean: '50.0%', std: '28.9%', min: '0.0%',   max: '100%',  color: '#38BDF8', fill: 50 },
+        { name: '10m U Wind (u10)',      mean: '−0.1 m/s', std: '4.5 m/s', min: '−25 m/s', max: '28 m/s', color: '#818CF8', fill: 55 },
+        { name: '10m V Wind (v10)',      mean: '−0.0 m/s', std: '4.2 m/s', min: '−22 m/s', max: '26 m/s', color: '#A78BFA', fill: 52 },
+        { name: 'Wind Speed',            mean: '1.25 m/s', std: '0.66 m/s', min: '0.0 m/s', max: '8.5 m/s', color: '#60A5FA', fill: 35 },
+        { name: 'Ocean Current (uo)',    mean: '−0.0 m/s', std: '1.0 m/s',  min: '−3.0 m/s', max: '3.0 m/s', color: '#34D399', fill: 48 },
+        { name: 'Ocean Current (vo)',    mean: '+0.0 m/s', std: '1.0 m/s',  min: '−3.0 m/s', max: '3.0 m/s', color: '#6EE7B7', fill: 48 },
+        { name: 'Current Speed',         mean: '1.25 m/s', std: '0.65 m/s', min: '0.0 m/s', max: '6.0 m/s', color: '#F472B6', fill: 30 },
+        { name: 'Day sin (seasonality)', mean: '+0.17',   std: '0.66',     min: '−1.0',  max: '+1.0',  color: '#FB923C', fill: 58 },
+        { name: 'Day cos (seasonality)', mean: '+0.11',   std: '0.72',     min: '−1.0',  max: '+1.0',  color: '#FBBF24', fill: 56 },
+    ];
+
+    var tbody = document.querySelector('#feature-table tbody');
+    if (tbody) {
+        tbody.innerHTML = '';
+        features.forEach(function(f) {
+            var tr = document.createElement('tr');
+
+            var nameTd = document.createElement('td');
+            nameTd.style.cssText = 'font-weight:500;color:#E2E8F0;';
+            nameTd.textContent = f.name;
+
+            var meanTd = document.createElement('td'); meanTd.textContent = f.mean; meanTd.style.color = '#F1F5F9';
+            var stdTd  = document.createElement('td'); stdTd.textContent  = f.std;
+            var minTd  = document.createElement('td'); minTd.textContent  = f.min;  minTd.style.color = '#94A3B8';
+            var maxTd  = document.createElement('td'); maxTd.textContent  = f.max;  maxTd.style.color = '#94A3B8';
+
+            var distCell = document.createElement('td');
+            distCell.style.width = '160px';
+            var track = document.createElement('div');
+            track.style.cssText = 'width:100%;height:7px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;';
+            var bar = document.createElement('div');
+            bar.style.cssText = 'height:100%;width:' + f.fill + '%;background:linear-gradient(90deg,' + f.color + '88,' + f.color + ');transition:width 0.6s ease;';
+            track.appendChild(bar);
+            distCell.appendChild(track);
+
+            [nameTd, meanTd, stdTd, minTd, maxTd, distCell].forEach(function(td) { tr.appendChild(td); });
+            tbody.appendChild(tr);
+        });
+    }
+
+    // ── Chart defaults ──────────────────────────────────────────────────────
+    Chart.defaults.color = '#94A3B8';
+    Chart.defaults.font.family = "'Inter', sans-serif";
+    Chart.defaults.font.size = 12;
+    Chart.defaults.scale.grid.color = 'rgba(255,255,255,0.05)';
+    Chart.defaults.scale.border = { color: 'rgba(255,255,255,0.08)' };
+
+    // ── 1. Seasonal Ice Extent Cycle ───────────────────────────────────────
+    var sc = document.getElementById('seasonal-chart-canvas');
+    if (sc && !sc._analyticsChart) {
+        sc._analyticsChart = new Chart(sc, {
+            type: 'line',
+            data: {
+                labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+                datasets: [
+                    {
+                        label: 'Historical Avg (2015–2023)',
+                        data: [3.8, 2.4, 3.1, 5.7, 8.2, 10.8, 13.4, 15.1, 15.6, 13.9, 10.1, 5.7],
+                        borderColor: '#38BDF8',
+                        backgroundColor: 'rgba(56,189,248,0.12)',
+                        borderWidth: 2.5,
+                        pointBackgroundColor: '#0B1629',
+                        pointBorderColor: '#38BDF8',
+                        pointBorderWidth: 2,
+                        pointRadius: 5,
+                        fill: true,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Model Forecast (2024)',
+                        data: [3.5, 2.1, 2.8, 5.3, 7.8, 10.2, 12.7, 14.1, null, null, null, null],
+                        borderColor: '#F59E0B',
+                        backgroundColor: 'transparent',
+                        borderWidth: 2,
+                        borderDash: [6, 4],
+                        pointBackgroundColor: '#0B1629',
+                        pointBorderColor: '#F59E0B',
+                        pointRadius: 5,
+                        fill: false,
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { position: 'top', labels: { usePointStyle: true, pointStyle: 'circle', boxWidth: 8, padding: 20 } },
+                    tooltip: {
+                        backgroundColor: 'rgba(15,23,42,0.95)',
+                        borderColor: 'rgba(255,255,255,0.1)',
+                        borderWidth: 1,
+                        callbacks: { label: function(ctx) { return ' ' + ctx.dataset.label + ': ' + (ctx.parsed.y !== null ? ctx.parsed.y.toFixed(1) + ' M km²' : '—'); } }
+                    }
+                },
+                scales: {
+                    y: { beginAtZero: true, title: { display: true, text: 'Ice Extent (Million km²)', color: '#64748B' }, ticks: { callback: function(v) { return v + ' M'; } } },
+                    x: { title: { display: true, text: 'Month', color: '#64748B' } }
+                }
+            }
+        });
+    }
+
+    // ── 2. Wind–Ice Correlation Scatter ────────────────────────────────────
+    var cc = document.getElementById('correlation-chart-canvas');
+    if (cc && !cc._analyticsChart) {
+        var pts = [];
+        // Generate realistic negative-correlation scatter
+        for (var i = 0; i < 200; i++) {
+            var w = (Math.random() * 22) - 2;
+            var sic = Math.max(0, Math.min(100, 85 - (w * 2.8) + (Math.random() * 35 - 17)));
+            pts.push({ x: parseFloat(w.toFixed(2)), y: parseFloat(sic.toFixed(1)) });
+        }
+        cc._analyticsChart = new Chart(cc, {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: 'Obs. Gridpoint',
+                    data: pts,
+                    backgroundColor: 'rgba(167,139,250,0.4)',
+                    borderColor: '#A78BFA',
+                    borderWidth: 0.5,
+                    pointRadius: 3.5,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(15,23,42,0.95)',
+                        borderColor: 'rgba(255,255,255,0.1)',
+                        borderWidth: 1,
+                        callbacks: { label: function(ctx) { return 'Wind: ' + ctx.parsed.x + ' m/s  |  SIC: ' + ctx.parsed.y + '%'; } }
+                    }
+                },
+                scales: {
+                    x: { title: { display: true, text: 'Meridional Wind Speed (m/s)', color: '#64748B' } },
+                    y: { title: { display: true, text: 'Sea Ice Concentration (%)', color: '#64748B' }, min: 0, max: 100 }
+                }
+            }
+        });
+    }
+
+    // ── 3. Prediction Error Distribution ───────────────────────────────────
+    var ec = document.getElementById('error-dist-canvas');
+    if (ec && !ec._analyticsChart) {
+        var errorBins   = ['0–1%', '1–2%', '2–3%', '3–4%', '4–5%', '5–7%', '7–10%', '>10%'];
+        var errorCounts = [1840, 3210, 2870, 2420, 1780, 1250, 680, 290];
+        var total = errorCounts.reduce(function(a, b) { return a + b; }, 0);
+        var bgColors = errorCounts.map(function(_, i) {
+            var ratio = i / (errorCounts.length - 1);
+            // Gradient from green → orange → red
+            if (ratio < 0.5) {
+                var r = Math.round(52  + (251-52)  * ratio * 2);
+                var g = Math.round(211 + (146-211) * ratio * 2);
+                var b = Math.round(153 + (60-153)  * ratio * 2);
+                return 'rgba(' + r + ',' + g + ',' + b + ',0.8)';
+            } else {
+                var r2 = Math.round(251 + (248-251) * (ratio - 0.5) * 2);
+                var g2 = Math.round(146 + (113-146) * (ratio - 0.5) * 2);
+                var b2 = Math.round(60  + (113-60)  * (ratio - 0.5) * 2);
+                return 'rgba(' + r2 + ',' + g2 + ',' + b2 + ',0.8)';
+            }
+        });
+
+        ec._analyticsChart = new Chart(ec, {
+            type: 'bar',
+            data: {
+                labels: errorBins,
+                datasets: [{
+                    label: 'Grid Cells',
+                    data: errorCounts,
+                    backgroundColor: bgColors,
+                    borderRadius: 5,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(15,23,42,0.95)',
+                        borderColor: 'rgba(255,255,255,0.1)',
+                        borderWidth: 1,
+                        callbacks: {
+                            label: function(ctx) {
+                                var pct = (ctx.parsed.y / total * 100).toFixed(1);
+                                return ' ' + ctx.parsed.y.toLocaleString() + ' cells (' + pct + '%)';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: { title: { display: true, text: 'Absolute SIC Error', color: '#64748B' } },
+                    y: { title: { display: true, text: 'Grid Cell Count', color: '#64748B' }, ticks: { callback: function(v) { return (v/1000).toFixed(1) + 'K'; } } }
+                }
+            }
+        });
+    }
+
+    // ── 4. Decadal SIC Trend & Anomaly Detection ───────────────────────────
+    var tc = document.getElementById('analytics-trend-canvas');
+    if (tc && !tc._analyticsChart) {
+        var months = [];
+        var meanSIC = [], upperBand = [], lowerBand = [];
+
+        // 3 fixed anomaly month-indices (guaranteed visible spikes)
+        var ANOMALY_INDICES = [14, 52, 97]; // Feb 2016, May 2019, Feb 2023
+        var ANOMALY_DELTAS  = [+18, -17, +16]; // % above/below seasonal norm
+
+        var baselineMean = 44.8;
+
+        for (var m = 0; m < 120; m++) {
+            var yr = 2015 + Math.floor(m / 12);
+            var mo = (m % 12) + 1;
+            months.push(yr + '/' + (mo < 10 ? '0' + mo : mo));
+
+            var seasonal = Math.sin((mo - 2) / 12 * 2 * Math.PI) * 18;
+            var trend    = -0.08 * m / 12;
+            var noise    = (Math.random() - 0.5) * 4;
+
+            // Inject anomaly spike at fixed indices
+            var aIdx = ANOMALY_INDICES.indexOf(m);
+            if (aIdx !== -1) { noise = ANOMALY_DELTAS[aIdx]; }
+
+            var val = Math.max(5, Math.min(95, baselineMean + seasonal + trend + noise));
+            meanSIC.push(parseFloat(val.toFixed(2)));
+            upperBand.push(parseFloat((baselineMean + seasonal + trend + 6).toFixed(2)));
+            lowerBand.push(parseFloat((baselineMean + seasonal + trend - 6).toFixed(2)));
+        }
+
+        // Build anomaly scatter points using the same index space as line datasets
+        // Chart.js scatter on a category axis needs index-based x (numeric) 
+        // so we put them as sparse arrays on the line type instead
+        var anomalySparse = new Array(120).fill(null);
+        ANOMALY_INDICES.forEach(function(idx) { anomalySparse[idx] = meanSIC[idx]; });
+
+        tc._analyticsChart = new Chart(tc, {
+            type: 'line',
+            data: {
+                labels: months,
+                datasets: [
+                    {
+                        label: '+1σ Band',
+                        data: upperBand,
+                        borderColor: 'transparent',
+                        backgroundColor: 'rgba(56,189,248,0.07)',
+                        pointRadius: 0,
+                        fill: '+1',
+                        tension: 0.3,
+                        order: 3
+                    },
+                    {
+                        label: 'Mean SIC',
+                        data: meanSIC,
+                        borderColor: '#38BDF8',
+                        backgroundColor: 'rgba(56,189,248,0.05)',
+                        borderWidth: 2,
+                        pointRadius: 0,
+                        pointHoverRadius: 5,
+                        fill: false,
+                        tension: 0.3,
+                        order: 2
+                    },
+                    {
+                        label: '−1σ Band',
+                        data: lowerBand,
+                        borderColor: 'transparent',
+                        backgroundColor: 'rgba(56,189,248,0.07)',
+                        pointRadius: 0,
+                        fill: '-1',
+                        tension: 0.3,
+                        order: 3
+                    },
+                    {
+                        label: 'Anomaly Event',
+                        data: anomalySparse,
+                        borderColor: 'transparent',
+                        backgroundColor: '#F87171',
+                        pointBackgroundColor: '#F87171',
+                        pointBorderColor: '#FCA5A5',
+                        pointBorderWidth: 3,
+                        pointRadius: function(ctx) {
+                            return anomalySparse[ctx.dataIndex] !== null ? 11 : 0;
+                        },
+                        pointHoverRadius: 14,
+                        pointStyle: 'triangle',
+                        showLine: false,
+                        fill: false,
+                        order: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                animation: { duration: 1000 },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            filter: function(item) {
+                                return item.text !== '+1σ Band' && item.text !== '−1σ Band';
+                            },
+                            usePointStyle: true,
+                            boxWidth: 10,
+                            padding: 20
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(15,23,42,0.95)',
+                        borderColor: 'rgba(255,255,255,0.1)',
+                        borderWidth: 1,
+                        callbacks: {
+                            label: function(ctx) {
+                                if (ctx.datasetIndex === 3 && ctx.parsed.y !== null) {
+                                    var delta = ANOMALY_DELTAS[ANOMALY_INDICES.indexOf(ctx.dataIndex)];
+                                    return ' ⚠ Anomaly: SIC ' + ctx.parsed.y.toFixed(1) + '% (' + (delta > 0 ? '+' : '') + delta + '% from norm)';
+                                }
+                                if (ctx.datasetIndex === 1) {
+                                    return ' Mean SIC: ' + ctx.parsed.y.toFixed(1) + '%';
+                                }
+                                return null;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            maxTicksLimit: 10,
+                            maxRotation: 0,
+                            callback: function(val, idx) {
+                                return months[idx] && months[idx].endsWith('/01') ? months[idx].substring(0, 4) : '';
+                            }
+                        },
+                        title: { display: true, text: 'Year', color: '#64748B' }
+                    },
+                    y: {
+                        title: { display: true, text: 'Mean SIC (%)', color: '#64748B' },
+                        min: 0,
+                        max: 100
+                    }
+                }
+            }
+        });
+    }
+}
+
+// Fire after everything (including CDN scripts) has loaded
+window.addEventListener('load', function() {
+    setTimeout(initAnalytics, 300);
+});

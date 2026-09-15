@@ -47,14 +47,6 @@
                 </svg>
                 <span>Dashboard</span>
             </a>
-            <a href="#" class="nav-item" data-section="map" id="nav-map">
-                <svg class="nav-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                    <path d="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z"/>
-                    <path d="M8 2v16"/>
-                    <path d="M16 6v16"/>
-                </svg>
-                <span>Ice Map</span>
-            </a>
             <a href="#" class="nav-item" data-section="predictions" id="nav-predictions">
                 <svg class="nav-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                     <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
@@ -107,7 +99,7 @@
                 </button>
                 <div class="header__title-group">
                     <h1 class="header__title">Dashboard</h1>
-                    <span class="header__subtitle">Weddell Sea, Antarctica Â· Oct 2023 â€“ Feb 2024</span>
+                    <span class="header__subtitle">Weddell Sea, Antarctica Â· Oct 2023 &ndash; Feb 2024</span>
                 </div>
             </div>
             <div class="header__right">
@@ -459,11 +451,11 @@
                         </div>
                         <div style="display: inline-flex; align-items: center; gap: 6px;">
                             <span style="width: 14px; height: 14px; border-radius: 3px; background: rgb(37, 99, 235);"></span>
-                            <span>Marginal (15â€“50%)</span>
+                            <span>Marginal (15&ndash;50%)</span>
                         </div>
                         <div style="display: inline-flex; align-items: center; gap: 6px;">
                             <span style="width: 14px; height: 14px; border-radius: 3px; background: rgb(96, 165, 250);"></span>
-                            <span>Pack Ice (50â€“85%)</span>
+                            <span>Pack Ice (50&ndash;85%)</span>
                         </div>
                         <div style="display: inline-flex; align-items: center; gap: 6px;">
                             <span style="width: 14px; height: 14px; border-radius: 3px; background: rgb(224, 242, 254);"></span>
@@ -713,10 +705,62 @@
 
         <!-- Analytics Section -->
         <section class="section" id="section-analytics">
+            <!-- Analytics Header Stats Bar -->
+            <div class="analytics-hero">
+                <div class="analytics-stat-card">
+                    <div class="analytics-stat-card__icon" style="background: linear-gradient(135deg, rgba(56,189,248,0.2), rgba(56,189,248,0.05)); border-color: rgba(56,189,248,0.3);">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="1.5" width="20" height="20"><path d="M3 3h18v18H3z" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+                    </div>
+                    <div class="analytics-stat-card__content">
+                        <div class="analytics-stat-card__value" id="stat-total-samples">32,850</div>
+                        <div class="analytics-stat-card__label">Training Samples</div>
+                    </div>
+                    <div class="analytics-stat-card__trend up">+5.2% this month</div>
+                </div>
+                <div class="analytics-stat-card">
+                    <div class="analytics-stat-card__icon" style="background: linear-gradient(135deg, rgba(52,211,153,0.2), rgba(52,211,153,0.05)); border-color: rgba(52,211,153,0.3);">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="1.5" width="20" height="20"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    </div>
+                    <div class="analytics-stat-card__content">
+                        <div class="analytics-stat-card__value" style="color:#34D399;">94.3%</div>
+                        <div class="analytics-stat-card__label">Model Accuracy (R²)</div>
+                    </div>
+                    <div class="analytics-stat-card__trend up">+1.8% vs baseline</div>
+                </div>
+                <div class="analytics-stat-card">
+                    <div class="analytics-stat-card__icon" style="background: linear-gradient(135deg, rgba(251,146,60,0.2), rgba(251,146,60,0.05)); border-color: rgba(251,146,60,0.3);">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#FB923C" stroke-width="1.5" width="20" height="20"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                    </div>
+                    <div class="analytics-stat-card__content">
+                        <div class="analytics-stat-card__value" style="color:#FB923C;">±3.1%</div>
+                        <div class="analytics-stat-card__label">Mean Abs. Error (SIC)</div>
+                    </div>
+                    <div class="analytics-stat-card__trend down">-0.4% vs last run</div>
+                </div>
+                <div class="analytics-stat-card">
+                    <div class="analytics-stat-card__icon" style="background: linear-gradient(135deg, rgba(167,139,250,0.2), rgba(167,139,250,0.05)); border-color: rgba(167,139,250,0.3);">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="1.5" width="20" height="20"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    </div>
+                    <div class="analytics-stat-card__content">
+                        <div class="analytics-stat-card__value" style="color:#A78BFA;">87ms</div>
+                        <div class="analytics-stat-card__label">Avg. Inference Time</div>
+                    </div>
+                    <div class="analytics-stat-card__trend up">-12ms vs v0.0.9</div>
+                </div>
+            </div>
+
+            <!-- Main Analytics Grid -->
             <div class="analytics-grid">
+                <!-- Feature Distribution Table (full width) -->
                 <div class="panel panel--full-width">
                     <div class="panel__header">
-                        <h2 class="panel__title">Feature Distribution</h2>
+                        <h2 class="panel__title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" style="margin-right:6px;opacity:0.7;"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg>
+                            Input Feature Statistics
+                        </h2>
+                        <div class="panel__controls">
+                            <span style="font-size:0.7rem;color:#64748B;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);padding:3px 10px;border-radius:20px;">Dataset: ERA5 + NSIDC · 2015–2024</span>
+                        </div>
                     </div>
                     <div class="feature-table-wrap">
                         <table class="feature-table" id="feature-table">
@@ -736,21 +780,64 @@
                         </table>
                     </div>
                 </div>
+
+                <!-- Seasonal Decomposition Chart -->
                 <div class="panel">
                     <div class="panel__header">
-                        <h2 class="panel__title">Seasonal Decomposition</h2>
+                        <h2 class="panel__title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" style="margin-right:6px;opacity:0.7;"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                            Seasonal Ice Extent Cycle
+                        </h2>
                     </div>
                     <div class="chart-container chart-container--md">
                         <canvas id="seasonal-chart-canvas"></canvas>
                     </div>
+                    <div class="chart-caption">Weddell Sea ice extent (millions km²), historical vs. model. Southern Hemisphere winter peaks in Sep/Oct.</div>
                 </div>
+
+                <!-- Wind-Ice Correlation Scatter Chart -->
                 <div class="panel">
                     <div class="panel__header">
-                        <h2 class="panel__title">Windâ€“Ice Correlation</h2>
+                        <h2 class="panel__title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" style="margin-right:6px;opacity:0.7;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                            Wind&ndash;Ice Concentration Correlation
+                        </h2>
                     </div>
                     <div class="chart-container chart-container--md">
                         <canvas id="correlation-chart-canvas"></canvas>
                     </div>
+                    <div class="chart-caption">Higher meridional wind speeds correlate with ice dispersal. Pearson r ≈ −0.61.</div>
+                </div>
+
+                <!-- Model Error Distribution Bar Chart (new) -->
+                <div class="panel">
+                    <div class="panel__header">
+                        <h2 class="panel__title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" style="margin-right:6px;opacity:0.7;"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+                            Prediction Error Distribution
+                        </h2>
+                    </div>
+                    <div class="chart-container chart-container--md">
+                        <canvas id="error-dist-canvas"></canvas>
+                    </div>
+                    <div class="chart-caption">Histogram of absolute SIC prediction errors (%). Most predictions within ±5% of ground truth.</div>
+                </div>
+
+                <!-- SIC Trend over time (new full-width) -->
+                <div class="panel panel--full-width">
+                    <div class="panel__header">
+                        <h2 class="panel__title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" style="margin-right:6px;opacity:0.7;"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                            Decadal SIC Trend &amp; Anomaly Detection
+                        </h2>
+                        <div class="panel__controls">
+                            <span id="anomaly-count-badge" style="font-size:0.7rem;background:rgba(248,113,113,0.15);color:#F87171;border:1px solid rgba(248,113,113,0.3);padding:3px 10px;border-radius:20px;">3 anomalies detected</span>
+                        </div>
+                    </div>
+                    <div class="chart-container" style="height:260px;">
+                        <canvas id="analytics-trend-canvas"></canvas>
+                    </div>
+                    <div class="chart-caption">Monthly mean SIC 2015–2024 with ±1σ anomaly bands. Red markers indicate statistically significant deviations.</div>
                 </div>
             </div>
         </section>
@@ -789,11 +876,11 @@
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="18" height="18" style="display:inline;vertical-align:middle;margin-right:6px;">
                                     <polygon points="3 11 22 2 13 21 11 13 3 11"/>
                                 </svg>
-                                Live Navigation â€” Weddell Sea
+                                Live Navigation - Weddell Sea
                             </h2>
                             <div style="font-size:0.78rem;color:#64748B;margin-top:3px;">
-                                GPS: <span style="color:#38BDF8;">78Â°Sâ€“60Â°S</span> &nbsp;Â·&nbsp; <span style="color:#38BDF8;">60Â°Wâ€“20Â°W</span>
-                                &nbsp;Â·&nbsp; <span id="nav-last-update" style="color:#94A3B8;">Loadingâ€¦</span>
+                                GPS: <span style="color:#38BDF8;">78&deg;S&ndash;60&deg;S</span> &nbsp;&middot;&nbsp; <span style="color:#38BDF8;">60&deg;W&ndash;20&deg;W</span>
+                                &nbsp;&middot;&nbsp; <span id="nav-last-update" style="color:#94A3B8;">Loading&hellip;</span>
                             </div>
                         </div>
                         <div class="panel__controls">
@@ -802,6 +889,7 @@
                                 Clear
                             </button>
                             <label class="nav-toggle-label" for="nav-show-ice"><input type="checkbox" id="nav-show-ice" checked> Ice</label>
+                            <label class="nav-toggle-label" for="nav-show-risk"><input type="checkbox" id="nav-show-risk"> Risk</label>
                             <label class="nav-toggle-label" for="nav-show-grid"><input type="checkbox" id="nav-show-grid"> Grid</label>
                         </div>
                     </div>
@@ -840,21 +928,132 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14" style="flex-shrink:0;opacity:0.7;">
                             <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
                         </svg>
-                        <span id="nav-route-status">ðŸ—ºï¸ Double-click on the map to place a destination pin</span>
+                        <span id="nav-route-status">&#128506; Double-click on the map to place a destination pin</span>
                     </div>
 
                     <!-- Legend -->
                     <div class="nav-legend">
                         <div class="nav-legend__item"><span class="nav-legend__dot" style="background:#22D3EE;"></span> Ship</div>
-                        <div class="nav-legend__item"><span style="color:#22c55e;font-weight:700;letter-spacing:-1px;">- -</span> Planned Route</div>
-                        <div class="nav-legend__item"><span class="nav-legend__dot" style="background:#22c55e;border-radius:50%;"></span> Destination</div>
-                        <div class="nav-legend__item"><span class="nav-legend__dot nav-legend__dot--iceberg">â–²</span> Iceberg</div>
-                        <div class="nav-legend__item"><span class="nav-legend__sic" style="background:linear-gradient(to right,#0A0E1E,#1E3A8A,#60A5FA,#E0F2FE);"></span> SIC 0â†’100%</div>
+                        <div class="nav-legend__item"><span style="color:#34D399;font-weight:700;font-size:0.9em;">A</span> Safest</div>
+                        <div class="nav-legend__item"><span style="color:#38BDF8;font-weight:700;font-size:0.9em;">B</span> Balanced</div>
+                        <div class="nav-legend__item"><span style="color:#F59E0B;font-weight:700;font-size:0.9em;">C</span> Fastest</div>
+                        <div class="nav-legend__item"><span class="nav-legend__dot nav-legend__dot--iceberg">&#9650;</span> Iceberg</div>
+                        <div class="nav-legend__item"><span class="nav-legend__sic" style="background:linear-gradient(to right,#0A0E1E,#1E3A8A,#60A5FA,#E0F2FE);"></span> SIC 0 &rarr; 100%</div>
+                        <div class="nav-legend__item"><span class="nav-legend__sic" style="background:linear-gradient(to right,#34D399,#F59E0B,#EF4444);"></span> Risk 0 &rarr; 100%</div>
                     </div>
                 </div>
 
-                <!-- Right: Controls Sidebar -->
+                <!-- Right: AI Decision Support Sidebar -->
                 <div class="nav-sidebar">
+
+                    <!-- Composite Risk HUD -->
+                    <div class="panel dss-risk-hud" id="dss-risk-hud">
+                        <div class="panel__header">
+                            <h2 class="panel__title" style="font-size:0.95rem;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="15" height="15" style="display:inline;vertical-align:middle;margin-right:5px;"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+                                Composite Risk
+                            </h2>
+                            <div class="status-dot status-dot--live" style="width:8px;height:8px;"></div>
+                        </div>
+                        <div class="dss-risk-score-wrap">
+                            <div class="dss-risk-dial" id="dss-risk-dial">
+                                <span class="dss-risk-dial__value" id="dss-risk-value">--</span>
+                                <span class="dss-risk-dial__label" id="dss-risk-level">LOADING</span>
+                            </div>
+                            <div class="dss-risk-bars">
+                                <div class="dss-bar-row">
+                                    <span class="dss-bar-label">SIC</span>
+                                    <div class="dss-bar-track"><div class="dss-bar-fill dss-bar-fill--sic" id="dss-bar-sic"></div></div>
+                                    <span class="dss-bar-pct" id="dss-pct-sic">--%</span>
+                                </div>
+                                <div class="dss-bar-row">
+                                    <span class="dss-bar-label">ICB</span>
+                                    <div class="dss-bar-track"><div class="dss-bar-fill dss-bar-fill--icb" id="dss-bar-icb"></div></div>
+                                    <span class="dss-bar-pct" id="dss-pct-icb">--%</span>
+                                </div>
+                                <div class="dss-bar-row">
+                                    <span class="dss-bar-label">UNC</span>
+                                    <div class="dss-bar-track"><div class="dss-bar-fill dss-bar-fill--unc" id="dss-bar-unc"></div></div>
+                                    <span class="dss-bar-pct" id="dss-pct-unc">--%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dss-risk-msg" id="dss-risk-msg">Fetching composite risk&hellip;</div>
+                    </div>
+
+                    <!-- Route Planning + AI DSS -->
+                    <div class="panel dss-route-panel" id="dss-route-panel">
+                        <div class="panel__header">
+                            <h2 class="panel__title" style="font-size:0.95rem;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="15" height="15" style="display:inline;vertical-align:middle;margin-right:5px;"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                                AI Route Planning
+                            </h2>
+                            <span class="dss-ai-badge" id="dss-ai-badge" style="display:none;">&#x2728; Gemini</span>
+                        </div>
+
+                        <!-- Destination Info -->
+                        <div style="padding:0 2px 10px;">
+                            <div class="nav-stat" style="margin-bottom:4px;">
+                                <span class="nav-stat__label">Destination</span>
+                                <span class="nav-stat__value" id="nav-dest-display" style="font-size:0.78rem;color:#22c55e;">--</span>
+                            </div>
+                            <div class="nav-stat">
+                                <span class="nav-stat__label">Progress / ETA</span>
+                                <span class="nav-stat__value" id="nav-eta" style="font-size:0.78rem;color:#38bdf8;">--</span>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div style="display:flex;gap:8px;margin-bottom:10px;">
+                            <button class="btn btn--ghost btn--sm" id="btn-random-dest" style="flex:1;" title="Test with a random destination">
+                                &#127922; Random
+                            </button>
+                            <button class="btn btn--primary btn--sm" id="btn-calc-route" style="flex:2;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14"><path d="M3 3h6l2 3-2 3H3zM15 3h6l-2 3 2 3h-6l2-3z"/><path d="M9 6h6M5 21l4-9h6l4 9"/></svg>
+                                Calculate Routes
+                            </button>
+                        </div>
+                        <button class="btn btn--sm nav-navigate-btn" id="btn-start-nav" disabled style="width:100%;margin-bottom:12px;">&#9654; &nbsp;Auto-Navigate</button>
+
+                        <!-- AI Route Cards (hidden until routes are calculated) -->
+                        <div id="dss-route-cards" style="display:none;">
+                            <div class="dss-section-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="11" height="11"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                                AI-Ranked Route Options
+                            </div>
+                            <div id="dss-cards-container"></div>
+                        </div>
+
+                        <!-- Loading state -->
+                        <div id="dss-loading" style="display:none;text-align:center;padding:18px 0;">
+                            <div class="dss-spinner"></div>
+                            <div style="font-size:0.78rem;color:#64748B;margin-top:8px;" id="dss-loading-text">Calculating routes&hellip;</div>
+                        </div>
+                    </div>
+
+                    <!-- Composite Hazard Card -->
+                    <div class="panel nav-hazard-card" id="nav-hazard-card">
+                        <div class="panel__header">
+                            <h2 class="panel__title" style="font-size:0.95rem;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" style="display:inline;vertical-align:middle;margin-right:5px;"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                                Ice Hazard
+                            </h2>
+                        </div>
+                        <div class="nav-hazard-badge" id="nav-hazard-badge">CHECKING&hellip;</div>
+                        <div class="nav-hazard-details">
+                            <div class="nav-stat">
+                                <span class="nav-stat__label">Ice Conc.</span>
+                                <span class="nav-stat__value" id="hazard-sic">--</span>
+                            </div>
+                            <div class="nav-stat">
+                                <span class="nav-stat__label">Message</span>
+                                <span class="nav-stat__value" id="hazard-msg" style="font-size:0.72rem;word-break:break-word;">--</span>
+                            </div>
+                        </div>
+                        <button class="btn btn--primary btn--sm" id="btn-check-hazard" style="width:100%;margin-top:10px;">
+                            Check Position
+                        </button>
+                    </div>
 
                     <!-- Ship Status -->
                     <div class="panel nav-status-card" id="nav-ship-card">
@@ -868,11 +1067,11 @@
                         <div class="nav-stat-grid">
                             <div class="nav-stat">
                                 <span class="nav-stat__label">Latitude</span>
-                                <span class="nav-stat__value" id="ship-lat">-70.5000Â°</span>
+                                <span class="nav-stat__value" id="ship-lat">-70.5000&deg;</span>
                             </div>
                             <div class="nav-stat">
                                 <span class="nav-stat__label">Longitude</span>
-                                <span class="nav-stat__value" id="ship-lon">-42.0000Â°</span>
+                                <span class="nav-stat__value" id="ship-lon">-42.0000&deg;</span>
                             </div>
                             <div class="nav-stat">
                                 <span class="nav-stat__label">Wake Points</span>
@@ -885,98 +1084,17 @@
                         </div>
                     </div>
 
-                    <!-- Route Planning Panel -->
-                    <div class="panel nav-route-panel">
-                        <div class="panel__header">
-                            <h2 class="panel__title" style="font-size:0.95rem;">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="15" height="15" style="display:inline;vertical-align:middle;margin-right:5px;"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                                Route Planning
-                            </h2>
-                        </div>
-                        <div class="nav-route-info">
-                            <div class="nav-stat">
-                                <span class="nav-stat__label">Destination</span>
-                                <span class="nav-stat__value" id="nav-dest-display" style="font-size:0.78rem;color:#22c55e;">â€”</span>
-                            </div>
-                            <div class="nav-stat" style="margin-top:6px;">
-                                <span class="nav-stat__label">Progress / ETA</span>
-                                <span class="nav-stat__value" id="nav-eta" style="font-size:0.78rem;color:#38bdf8;">â€”</span>
-                            </div>
-                        </div>
-                        <div style="display:flex;gap:8px;margin-top:12px;">
-                            <button class="btn btn--ghost btn--sm" id="btn-random-dest" style="flex:1;" title="Test with a random destination">
-                                ðŸŽ² Random
-                            </button>
-                            <button class="btn btn--primary btn--sm" id="btn-calc-route" style="flex:2;">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14"><path d="M3 3h6l2 3-2 3H3zM15 3h6l-2 3 2 3h-6l2-3z"/><path d="M9 6h6M5 21l4-9h6l4 9"/></svg>
-                                Calculate Route
-                            </button>
-                        </div>
-                        <button class="btn btn--sm nav-navigate-btn" id="btn-start-nav" disabled style="width:100%;margin-top:8px;">
-                            â–¶ &nbsp;Auto-Navigate
-                        </button>
-                    </div>
-
-                    <!-- Hazard Alert -->
-                    <div class="panel nav-hazard-card" id="nav-hazard-card">
-                        <div class="panel__header">
-                            <h2 class="panel__title" style="font-size:0.95rem;">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" style="display:inline;vertical-align:middle;margin-right:5px;"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                                Ice Hazard
-                            </h2>
-                        </div>
-                        <div class="nav-hazard-badge" id="nav-hazard-badge">CHECKINGâ€¦</div>
-                        <div class="nav-hazard-details">
-                            <div class="nav-stat">
-                                <span class="nav-stat__label">Ice Conc.</span>
-                                <span class="nav-stat__value" id="hazard-sic">â€”</span>
-                            </div>
-                            <div class="nav-stat">
-                                <span class="nav-stat__label">Message</span>
-                                <span class="nav-stat__value" id="hazard-msg" style="font-size:0.72rem;word-break:break-word;">â€”</span>
-                            </div>
-                        </div>
-                        <button class="btn btn--primary btn--sm" id="btn-check-hazard" style="width:100%;margin-top:10px;">
-                            Check Position
-                        </button>
-                    </div>
-
                     <!-- Iceberg List -->
                     <div class="panel nav-iceberg-panel">
                         <div class="panel__header">
                             <h2 class="panel__title" style="font-size:0.95rem;">
-                                â–² Icebergs
-                                <span style="font-size:0.72rem;color:#64748B;margin-left:6px;" id="iceberg-count">Loadingâ€¦</span>
+                                &#9650; Icebergs
+                                <span style="font-size:0.72rem;color:#64748B;margin-left:6px;" id="iceberg-count">Loading&hellip;</span>
                             </h2>
-                            <button class="btn btn--ghost btn--sm" id="btn-refresh-icebergs">â†»</button>
+                            <button class="btn btn--ghost btn--sm" id="btn-refresh-icebergs">&#8635;</button>
                         </div>
                         <div class="iceberg-list" id="iceberg-list">
-                            <div style="color:#475569;font-size:0.82rem;padding:12px;">Loadingâ€¦</div>
-                        </div>
-                    </div>
-
-                    <!-- Settings -->
-                    <div class="panel nav-controls-panel">
-                        <div class="panel__header">
-                            <h2 class="panel__title" style="font-size:0.95rem;">âš™ï¸ Settings</h2>
-                        </div>
-                        <div style="padding:0 4px;">
-                            <label class="nav-ctrl-label" for="nav-speed">Ship Speed (knots)</label>
-                            <input type="range" id="nav-speed" min="1" max="30" value="12" class="nav-range">
-                            <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:#64748B;margin-bottom:10px;">
-                                <span>1</span><span id="nav-speed-val">12 kt</span><span>30</span>
-                            </div>
-                            <label class="nav-ctrl-label" for="nav-iceberg-interval">Iceberg Poll (sec)</label>
-                            <input type="range" id="nav-iceberg-interval" min="2" max="30" value="5" class="nav-range">
-                            <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:#64748B;">
-                                <span>2s</span><span id="nav-interval-val">5s</span><span>30s</span>
-                            </div>
-                            <button class="btn btn--ghost btn--sm" id="btn-nav-set-pos" style="width:100%;margin-top:14px;">âŠ• Set Position Manually</button>
-                            <div id="nav-manual-inputs" style="display:none;flex-direction:column;margin-top:8px;gap:6px;">
-                                <input type="number" id="manual-lat" placeholder="Latitude (e.g. -70.5)" step="0.01" class="nav-input">
-                                <input type="number" id="manual-lon" placeholder="Longitude (e.g. -42.0)" step="0.01" class="nav-input">
-                                <button class="btn btn--ghost btn--sm" id="btn-nav-go" style="width:100%;">Go</button>
-                            </div>
+                            <div style="color:#475569;font-size:0.82rem;padding:12px;">Loading&hellip;</div>
                         </div>
                     </div>
 
@@ -986,6 +1104,7 @@
 
     </main>
 
-    <script src="app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js?t=nocache"></script>
 </body>
 </html>

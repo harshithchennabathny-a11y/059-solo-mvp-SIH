@@ -1925,7 +1925,7 @@ body {
 }
 
 #custom-pred-canvas {
-    aspect-ratio: 81 / 37;
+    
     display: block;
     width: 100%;
     border-radius: 0;
@@ -1980,4 +1980,342 @@ body {
     border-radius: 4px;
     transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+/* ========================================
+   DSS — AI Decision Support System Styles
+   ======================================== */
+
+/* ---- Composite Risk HUD ---- */
+.dss-risk-hud { padding: 14px 16px 12px; flex-shrink: 0; }
+
+.dss-risk-score-wrap {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 10px 0 8px;
+}
+
+.dss-risk-dial {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    border: 3px solid var(--border-primary);
+    background: radial-gradient(circle, rgba(30,58,138,0.25) 0%, transparent 70%);
+    transition: border-color 0.5s ease, background 0.5s ease;
+    flex-shrink: 0;
+}
+.dss-risk-dial--clear   { border-color: #34D399; background: radial-gradient(circle, rgba(52,211,153,0.15) 0%, transparent 70%); }
+.dss-risk-dial--low     { border-color: #38BDF8; background: radial-gradient(circle, rgba(56,189,248,0.15) 0%, transparent 70%); }
+.dss-risk-dial--moderate{ border-color: #F59E0B; background: radial-gradient(circle, rgba(245,158,11,0.15) 0%, transparent 70%); }
+.dss-risk-dial--high    { border-color: #F97316; background: radial-gradient(circle, rgba(249,115,22,0.15) 0%, transparent 70%); }
+.dss-risk-dial--critical{ border-color: #EF4444; background: radial-gradient(circle, rgba(239,68,68,0.20) 0%, transparent 70%); animation: dss-pulse-critical 1.4s ease-in-out infinite; }
+
+@keyframes dss-pulse-critical {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.3); }
+    50%       { box-shadow: 0 0 0 8px rgba(239,68,68,0); }
+}
+
+.dss-risk-dial__value {
+    font-size: 1.3rem;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-primary);
+    line-height: 1;
+}
+.dss-risk-dial__label {
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+    margin-top: 2px;
+}
+
+.dss-risk-bars { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+
+.dss-bar-row {
+    display: grid;
+    grid-template-columns: 28px 1fr 34px;
+    align-items: center;
+    gap: 6px;
+}
+.dss-bar-label { font-size: 0.68rem; font-weight: 700; color: var(--text-secondary); letter-spacing: 0.05em; }
+.dss-bar-track {
+    height: 6px;
+    background: rgba(255,255,255,0.07);
+    border-radius: 99px;
+    overflow: hidden;
+}
+.dss-bar-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 99px;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.dss-bar-fill--sic { background: linear-gradient(90deg, #1E3A8A, #60A5FA); }
+.dss-bar-fill--icb { background: linear-gradient(90deg, #78350F, #F59E0B); }
+.dss-bar-fill--unc { background: linear-gradient(90deg, #312E81, #818CF8); }
+.dss-bar-pct { font-size: 0.67rem; color: var(--text-secondary); text-align: right; font-variant-numeric: tabular-nums; }
+
+.dss-risk-msg {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    margin-top: 4px;
+    min-height: 1.4em;
+}
+
+/* ---- Route Panel ---- */
+.dss-route-panel { padding: 14px 16px 14px; flex-shrink: 0; }
+
+.dss-ai-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.66rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 99px;
+    background: linear-gradient(135deg, #1e3a8a, #7c3aed);
+    color: #fff;
+    letter-spacing: 0.04em;
+    animation: dss-badge-shimmer 3s ease-in-out infinite;
+}
+@keyframes dss-badge-shimmer {
+    0%, 100% { box-shadow: 0 0 6px rgba(99,102,241,0.4); }
+    50%       { box-shadow: 0 0 14px rgba(99,102,241,0.8); }
+}
+
+.dss-section-label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    margin: 2px 0 10px;
+}
+
+/* ---- Route Card ---- */
+.dss-route-card {
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-md);
+    background: rgba(17, 24, 39, 0.6);
+    margin-bottom: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+}
+.dss-route-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.3);
+}
+.dss-route-card.dss-route-card--active {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 2px rgba(56,189,248,0.25), 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.dss-card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 12px 7px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.dss-rank-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    font-size: 0.78rem;
+    font-weight: 900;
+    flex-shrink: 0;
+    position: relative;
+}
+.dss-rank-badge--1 { background: linear-gradient(135deg, #ca8a04, #fde047); color: #1c1400; box-shadow: 0 0 10px rgba(253,224,71,0.4); }
+.dss-rank-badge--2 { background: linear-gradient(135deg, #64748b, #cbd5e1); color: #0f172a; }
+.dss-rank-badge--3 { background: linear-gradient(135deg, #92400e, #d97706); color: #fff; }
+
+.dss-card-route-id {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 900;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.dss-card-label { font-size: 0.82rem; font-weight: 700; color: var(--text-primary); flex: 1; }
+
+.dss-risk-chip {
+    font-size: 0.62rem;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 99px;
+    letter-spacing: 0.06em;
+    flex-shrink: 0;
+}
+
+.dss-card-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1px;
+    background: rgba(255,255,255,0.04);
+}
+.dss-card-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 7px 4px;
+    background: rgba(10,14,26,0.4);
+}
+.dss-card-stat__val { font-size: 0.82rem; font-weight: 700; color: var(--text-primary); }
+.dss-card-stat__lbl { font-size: 0.6rem; color: var(--text-secondary); margin-top: 1px; }
+
+.dss-card-explanation {
+    padding: 8px 12px;
+    font-size: 0.71rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.dss-card-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 0 12px 9px;
+}
+.dss-chip {
+    font-size: 0.62rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 99px;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+.dss-chip--pro { background: rgba(52,211,153,0.12); color: #34D399; border: 1px solid rgba(52,211,153,0.25); }
+.dss-chip--con { background: rgba(239,68,68,0.10); color: #F87171; border: 1px solid rgba(239,68,68,0.22); }
+
+.dss-card-select-btn {
+    display: none;
+    width: calc(100% - 24px);
+    margin: 0 12px 10px;
+}
+.dss-route-card--active .dss-card-select-btn { display: block; }
+
+/* ---- Spinner ---- */
+.dss-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid rgba(56,189,248,0.15);
+    border-top-color: #38BDF8;
+    border-radius: 50%;
+    animation: dss-spin 0.8s linear infinite;
+    margin: 0 auto;
+}
+@keyframes dss-spin { to { transform: rotate(360deg); } }
+
+/* ---- Risk color helpers ---- */
+.risk-clear    { color: #34D399; }
+.risk-low      { color: #38BDF8; }
+.risk-moderate { color: #F59E0B; }
+.risk-high     { color: #F97316; }
+.risk-critical { color: #EF4444; }
+
+.nav-sidebar > .panel { flex-shrink: 0; }
+
+/* ==========================================
+   Analytics Section Styles
+   ========================================== */
+
+/* Hero stat cards row */
+.analytics-hero {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--space-lg);
+    margin-bottom: var(--space-xl);
+}
+
+.analytics-stat-card {
+    background: var(--surface-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: border-color 0.2s, transform 0.2s;
+    position: relative;
+    overflow: hidden;
+}
+.analytics-stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(56,189,248,0.4), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+.analytics-stat-card:hover { border-color: rgba(56,189,248,0.25); transform: translateY(-2px); }
+.analytics-stat-card:hover::before { opacity: 1; }
+
+.analytics-stat-card__icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    border: 1px solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 4px;
+}
+.analytics-stat-card__content { display: flex; flex-direction: column; gap: 2px; }
+.analytics-stat-card__value {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    line-height: 1;
+}
+.analytics-stat-card__label {
+    font-size: var(--text-xs);
+    color: var(--text-tertiary);
+    font-weight: 500;
+}
+.analytics-stat-card__trend {
+    font-size: 0.72rem;
+    font-weight: 500;
+    margin-top: 2px;
+}
+.analytics-stat-card__trend.up   { color: #34D399; }
+.analytics-stat-card__trend.down { color: #F87171; }
+
+/* Chart captions */
+.chart-caption {
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+    padding: 8px 20px 16px;
+    line-height: 1.5;
+    border-top: 1px solid var(--border-subtle);
+    margin-top: 4px;
+}
+
+/* Feature table improvements */
+#feature-table tbody tr td:first-child { font-size: 0.82rem; }
+#feature-table th:last-child, #feature-table td:last-child { width: 160px; min-width: 120px; }
 
